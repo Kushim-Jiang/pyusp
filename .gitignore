@@ -179,3 +179,36 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# --- pyusp (Rust engine + maturin wheel) ---
+/target
+**/target
+**/dist
+*.whl
+# bundled system DLL (copied at build time by python/build_wheel.ps1)
+python/pyusp-wheel/python/pyusp/usp10.dll
+# scratch json from manual tests
+*.json.tmp
+# scratch wheel-test venv
+.venvtest/
+
+# --- Wine Uniscribe port (tools/wine_usp) ---
+# intermediate objects + DLLs compiled from port/src (the redistributable
+# engine is committed separately as python/pyusp-wheel/.../pyusp/wineusp.dll)
+tools/wine_usp/port/build/
+# third-party Wine source trees (mirrored from downloads/, kept for reference)
+tools/wine_usp/wine-src/
+tools/wine_usp/wine-master/
+
+# --- RE / analysis artifacts ---
+# downloaded Microsoft symbol (regenerable via tools/get_usp10_pdb.py)
+tools/pdb/
+# Ghidra export output (script tools/ghidra/dump_shape.py is tracked)
+tools/ghidra/out/
+
+# regenerable trace / alignment-run outputs (written by python/matrix.py,
+# python/tr_run.py, python/regress_nonmongol.py)
+python/tr_out.txt
+tools/wine_usp/matrix.txt
+tools/wine_usp/regress.txt
+tools/wine_usp/result.txt
