@@ -59,6 +59,29 @@ hook，产出 `final` 与 `stages` 同源的真逐-lookup trace（替代 HB 代�
 - 含义：若继续，下一杠杆 = 用 RIP 桶收窄到指令级定位 **lookup-list driver 循环**
   （迭代 feature/lookup 并调 table[type] 的那段），再对 glyph-buffer 对象做内联 hook
   每轮快照——代价高于预期，无干净边界函数可挂。
+
+## 检查点 8（★引擎在 TextShaping.dll，gdi32full 只是字体表提供者 + 新探针基建）
+- **RET 探针**（worker_hook arm_rvas_ret/hook_boundary_ret：stub 读 [rsp+0x50]=原返回
+  地址）：gdi32full 的 0x4b720/0x4e180/0x4cfb0（=OT 表数据 getter）**调用者全在
+  TextShaping.dll**（运行基址 0x7ffba9c60000；ImageBase 0x180000000，Size 0xfa000≈1MB）：
+  0x4b720←RVA 0x253d3 x58、0x4e180←0x25831 x58、0x4cfb0←0x25c24 x33。TextShaping 经
+  thunk 0x180054010 反复调它们 → **真引擎(含蒙古文 contextual/glyph 改写)在
+  TextShaping；gdi32full 的 ScriptShapeOpenType(0x5a180) 只是外层**，其 0x4b720 等是
+  供 TextShaping 取解析后 OT 表头(GSUB@obj+0x28/GPOS@0x40/GDEF@0x58/mort@0x70/morx@0x88)。
+- **glyph 就地探针**(PYUSP_GLYPH_PROBE)：gdi32full 不就地写调用方 pwOutGlyphs(全程零)，
+  内部缓冲在 TextShaping 引擎手里。
+- **RIP 采样器可切模块**(PYUSP_RIP_MODULE，默认 gdi32full)：TextShaping 是 shape 时才
+  动态加载→GetModuleHandleA 在 rip_start 为 0，**须 sampler_loop 每轮重试解析基址**否则
+  0 样本。TextShaping 蒙古 21906/latin 8246 样本(>gdi32full 10070)；**蒙古专属(latin=0)
+  热桶** rva16 0x25b00(2555)/0x1690(2384)/0x79f0(2263)/0xc180(1546)/0xd3e0(1273)/
+  0xb020(1217)/0xd7f0(1174)/0x454d0(947)/0x43160(432)；共享 GSUB 簇 0xc100-0xc190。
+- **0xb000-0xcc00 巨型单体函数**：内嵌 GSUB/GPOS 整表解析(入口 0xc1c0 按 'GSUB'/
+  'GPOS' 分派，解析结果存 r15 对象 +0x38/+0x40)+**glyph 改写段 0xbc00-0xbf00**(8B 记录
+  {u16 gid,u16 属性}，(%rdi) 比较、写 0xf8(%rbp) 缓冲、r11 写游标增删=上下文替换重建
+  输出串；r14=count)+递归 quicksort 0xc100 → TextShaping 引擎也**单体融合**，无干净
+  逐-lookup 函数边界，只有叶级助手可 hook(同 gdi32full 情形)。
+- 下一杠杆(未做)：0xbc00-0xbf00 glyph 改写段**指令级 RIP 收窄**找 lookup 索引推进点→
+  内联 hook 0xf8(%rbp) glyph 缓冲逐轮快照。目标已精化到"已知大函数内循环"，仍长。
 - 建议：若 babelsoft 端当前瓶颈只是"stages 必须逐-lookup 且 final==usp10"，则先落地
   **wineusp 真逐-lookup（已全语料 final 逐位 == usp10）** 作为该路径的 stages 来源
   （彻底去掉 HB），原生 gdi32full hook 留作独立、可后置的长期 RE 项。

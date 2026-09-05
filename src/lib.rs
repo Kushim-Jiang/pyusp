@@ -37,6 +37,7 @@ use windows::Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW};
 
 pub mod pe;
 pub mod selfhook;
+pub mod worker_hook;
 
 // ---------------------------------------------------------------------------
 // SCRIPT_ANALYSIS / SCRIPT_STATE bit masks (usp10.h, 10.0.22621):
@@ -508,6 +509,8 @@ struct ShapeRun<'a> {
     /// (stage-name, glyph-id run) captured from wineusp during ScriptShapeOpenType,
     /// in the engine's (logical) order — same order as `glyphs` before RTL reversal.
     trace_stages: Vec<(String, Vec<u16>)>,
+    /// RE probe guard (PYUSP_CALLEE_PROBE) — keeps callee hooks armed.
+    callee_guard: Option<worker_hook::Guard>,
 }
 
 impl<'a> ShapeRun<'a> {
@@ -565,6 +568,72 @@ impl<'a> ShapeRun<'a> {
                 (b)();
             }
         }
+        // RE probe: capture gdi32full threadpool worker entry (ntdll
+        // TpSimpleTryPost callback) — or, for PYUSP_CALLEE_PROBE, count which
+        // of the statically-identified callees of ScriptShapeOpenType actually
+        // fire during this shape.
+        let worker_probe = std::env::var_os("PYUSP_WORKER_PROBE").is_some();
+        let callee_probe = std::env::var_os("PYUSP_CALLEE_PROBE").is_some();
+        let glyph_probe = std::env::var_os("PYUSP_GLYPH_PROBE").is_some();
+        let ret_probe = std::env::var_os("PYUSP_RET_PROBE").is_some();
+        if ret_probe {
+            // Capture the return address of each per-glyph getter fire so the
+            // per-glyph driver loop (unique concentrated caller) is located.
+            let cname = std::ffi::CString::new("gdi32full.dll").unwrap();
+            let gbase = unsafe {
+                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
+                    cname.as_ptr() as *const u8,
+                ))
+                .map(|h| h.0 as u64)
+                .unwrap_or(0)
+            };
+            if gbase != 0 {
+                self.callee_guard = Some(unsafe {
+                    worker_hook::arm_rvas_ret(
+                        gbase,
+                        &[(0x4b720, 5), (0x4e180, 11), (0x4cfb0, 8)],
+                    )
+                });
+            }
+        } else if callee_probe || glyph_probe {
+            let cname = std::ffi::CString::new("gdi32full.dll").unwrap();
+            let gbase = unsafe {
+                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
+                    cname.as_ptr() as *const u8,
+                ))
+                .map(|h| h.0 as u64)
+                .unwrap_or(0)
+            };
+            if gbase != 0 {
+                // Dispatch-table members only (guaranteed function entries).
+                // (rva, safe prologue prefix B from objdump of gdi32full 10.0.26100)
+                let rvas: [(u64, usize); 11] = [
+                    (0x4eb50, 8), (0x53b90, 7), (0x4b430, 8), (0x7b950, 8), (0x7a10, 5),
+                    (0x29ab0, 8), (0x4b720, 5), (0x4e180, 11), (0x4bb50, 8), (0x57910, 5),
+                    (0x4cfb0, 8),
+                ];
+                let list: Vec<(u64, usize)> = if glyph_probe {
+                    // Only the per-glyph tag getters that fire ~per glyph.
+                    vec![(0x4b720, 5), (0x4e180, 11), (0x4cfb0, 8)]
+                } else {
+                    // PYUSP_CALLEE_ONE=<hex rva>: hook only that rva (bisection).
+                    let single = std::env::var("PYUSP_CALLEE_ONE")
+                        .ok()
+                        .and_then(|v| u64::from_str_radix(v.trim_start_matches("0x"), 16).ok());
+                    match single {
+                        Some(rva) => rvas
+                            .iter()
+                            .copied()
+                            .filter(|(r, _)| *r == rva)
+                            .collect(),
+                        None => rvas.to_vec(),
+                    }
+                };
+                self.callee_guard = Some(unsafe { worker_hook::arm_rvas(gbase, &list) });
+            }
+        } else if worker_probe {
+            worker_hook::arm_once();
+        }
         // Ask for logical-order glyph arrays (like HarfBuzz) so RTL runs can
         // be compared 1:1. Preserve all flags ScriptItemize set.
         psa._bitfield |= A_FLOGICAL_ORDER;
@@ -612,6 +681,11 @@ impl<'a> ShapeRun<'a> {
                 },
             );
             let mut rp_arr: [*const TEXTRANGE_PROPERTIES; 1] = [rp_range];
+            if glyph_probe {
+                // stash the caller out-buffer so each per-glyph hook fire can
+                // snapshot whether gdi32full mutates it in place
+                worker_hook::set_glyph_buf(glyphs.as_mut_ptr(), glyphs.len());
+            }
             let hr = (self.usp.shape_ot)(
                 self.hdc,
                 self.psc,
@@ -654,6 +728,133 @@ impl<'a> ShapeRun<'a> {
             ));
         }
         let n = cglyphs as usize;
+
+        // Glyph in-place probe report: dedupe consecutive buffer states across
+        // per-glyph getter fires (0x4b720/0x4e180/0x4cfb0).
+        if glyph_probe {
+            let steps = worker_hook::drain_glyph_steps();
+            eprintln!("[glyph] fires={} cap={}", steps.len(), glyphs.len());
+            let mut last: Option<Vec<u16>> = None;
+            let mut distinct = 0;
+            for (i, (tag, snap)) in steps.iter().enumerate() {
+                let changed = last.as_ref().map(|l| l != snap).unwrap_or(true);
+                if changed {
+                    distinct += 1;
+                    // trim trailing zero padding (caller buffer was zeroed)
+                    let nz = snap
+                        .iter()
+                        .rposition(|&x| x != 0)
+                        .map(|p| p + 1)
+                        .unwrap_or(0);
+                    let show = &snap[..nz.min(snap.len())];
+                    eprintln!("[glyph] fire#{i} rva={tag:#x} buf={show:?}");
+                }
+                last = Some(snap.clone());
+            }
+            eprintln!("[glyph] distinct_states={distinct}");
+        }
+
+        // Return-address probe report: aggregate caller continuation RVAs.
+        if ret_probe {
+            let rets = worker_hook::drain_rets();
+            use std::ffi::CString;
+            let cname = CString::new("gdi32full.dll").unwrap();
+            let gbase = unsafe {
+                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
+                    cname.as_ptr() as *const u8,
+                ))
+                .map(|h| h.0 as u64)
+                .unwrap_or(0)
+            };
+            eprintln!("[ret] fires={} base={gbase:#x}", rets.len());
+            let mut agg: std::collections::BTreeMap<(u64, u64), u32> =
+                std::collections::BTreeMap::new();
+            for (rva, ret) in &rets {
+                let caller = if gbase != 0 && *ret >= gbase { ret - gbase } else { *ret };
+                *agg.entry((*rva, caller)).or_insert(0) += 1;
+            }
+            // resolve the module owning each caller address (which module is
+            // driving the OT engine?) — short lines (<70 chars) to dodge the
+            // console-width truncation of the *> redirect.
+            let mut modbase: u64 = 0;
+            for ((rva, caller), c) in agg {
+                let (mbase, mname) = unsafe {
+                    let mut h = windows::Win32::Foundation::HMODULE(std::ptr::null_mut());
+                    let ok = windows::Win32::System::LibraryLoader::GetModuleHandleExW(
+                        windows::Win32::System::LibraryLoader::GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+                        windows::core::PCWSTR(caller as *const u16),
+                        &mut h,
+                    )
+                    .is_ok();
+                    if ok && !h.is_invalid() {
+                        let mut buf = [0u16; 260];
+                        let n = windows::Win32::System::LibraryLoader::GetModuleFileNameW(
+                            h,
+                            &mut buf,
+                        );
+                        let name = String::from_utf16_lossy(&buf[..n as usize]);
+                        let short = name
+                            .rsplit('\\')
+                            .next()
+                            .unwrap_or(&name)
+                            .to_string();
+                        (h.0 as u64, short)
+                    } else {
+                        (0, String::new())
+                    }
+                };
+                if mbase != 0 {
+                    modbase = mbase;
+                }
+                let caller_rva = if mbase != 0 && caller >= mbase {
+                    caller - mbase
+                } else {
+                    caller
+                };
+                eprintln!("[ret] h={rva:#x} c={caller_rva:#x} x{c} m={mname}");
+            }
+            if modbase != 0 {
+                eprintln!("[ret] modbase={modbase:#x}");
+            }
+        }
+
+        // RE probe report: which gdi32full functions were posted to a thread /
+        // threadpool during ScriptShapeOpenType (worker/engine entries).
+        if worker_probe {
+            let evs = worker_hook::drain();
+            use std::ffi::CString;
+            let name = CString::new("gdi32full.dll").unwrap();
+            let base = unsafe {
+                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
+                    name.as_ptr() as *const u8,
+                ))
+                .map(|h| h.0 as u64)
+                .unwrap_or(0)
+            };
+            eprintln!("[worker] events={} gdi32full_base={base:#x}", evs.len());
+            for (tag, addr) in evs {
+                let t = match tag {
+                    1 => "post",
+                    2 => "alloc",
+                    3 => "thread",
+                    _ => "?",
+                };
+                if base != 0 && addr >= base && addr < base + 0x200000 {
+                    eprintln!("[worker] {t} gdi32full RVA {:#x}", addr - base);
+                }
+            }
+        }
+        if callee_probe {
+            let evs = worker_hook::drain();
+            let mut agg: std::collections::BTreeMap<u64, u32> = std::collections::BTreeMap::new();
+            for (tag, _v) in evs {
+                *agg.entry(tag as u64).or_insert(0) += 1;
+            }
+            eprintln!("[callee] fires:");
+            for (rva, c) in agg {
+                eprintln!("[callee]   {rva:#x} x{c}");
+            }
+        }
 
         // Drain the wineusp per-lookup trace (cmap → per-lookup → final).
         if self.trace_on {
@@ -790,10 +991,17 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
         psc: &mut psc,
         trace_on: opts.trace,
         trace_stages: Vec::new(),
+        callee_guard: None,
     };
 
     let features = parse_features(&opts.features_arg);
 
+    let rip_probe = std::env::var_os("PYUSP_RIP_PROBE").is_some();
+    let _ripg = if rip_probe {
+        Some(unsafe { worker_hook::rip_start() })
+    } else {
+        None
+    };
     let result = (|| -> Result<Value, String> {
         // itemize (OpenType: gives per-item script tags)
         let cchars = text16.len() as i32;
@@ -986,6 +1194,11 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
             }
         }))
     })();
+
+    if rip_probe {
+        drop(_ripg);
+        worker_hook::rip_report();
+    }
 
     unsafe {
         let _ = (usp.free_cache)(&mut psc);

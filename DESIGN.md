@@ -15,7 +15,7 @@ Uniscribe analogue of the pydwshape/DWriteCore tracer and the HarfBuzz engines.
 | `pe` signature scanner / relocation infra | DONE, verified on gdi32full |
 | `selfhook` inline-hook engine | compiled; target requires native-RE (below) |
 | **per-lookup trace (server-satisfying)** | **DONE** — genuine wineusp (see below) |
-| native usp10 (gdi32full) per-lookup hook | **blocked** (SPIKE sessions 1–7: no once-per-lookup dispatcher) |
+| native usp10 (gdi32full/TextShaping) per-lookup hook | **blocked** (SPIKE s1–8: engine fused, no once-per-lookup dispatcher) |
 | Wine GSUB engine deep fixes (rclt/T6/T8/marks) | DONE — Mongolian byte-identical to usp10 |
 
 ### Per-lookup trace delivered (babelmap server contract) — genuine, no HB
@@ -113,8 +113,8 @@ construction (see Status).
 - `tools/wine_usp/` — the standalone Wine `dlls/gdi32/uniscribe` port
   (`port/` builds `wineusp.dll`); `port/src/trace.c` is the in-engine
   per-lookup stage recorder.
-- `tools/native_spike/` — gdi32full native-RE investigation (SPIKE.md,
-  sessions 1–7: thread model, dispatch table, per-glyph refutation).
+- `tools/native_spike/` — native-RE investigation (SPIKE.md, sessions 1–8:
+  gdi32full as table provider, TextShaping.dll as the real fused engine).
 - `python/compare_pyusp.py` — uharfbuzz regression matrix (above).
 - `tools/get_usp10_pdb.py` — downloads usp10.pdb (kept in `tools/pdb/`).
 - `tools/pdb_strings.py` — dumps PDB identifier strings.
@@ -139,19 +139,31 @@ construction (see Status).
 
 ## Native usp10 per-lookup hook — investigated, not feasible (SPIKE)
 
-`tools/native_spike/SPIKE.md` (sessions 1–7) is the full record. Summary:
+`tools/native_spike/SPIKE.md` (sessions 1–8) is the full record. Summary:
 
-1. On Win11 24H2 `usp10.dll` forwards into `gdi32full.dll` (stripped PDBs).
-2. The OT engine runs **inline on the shaping thread** (no threadpool), as a
-   **table-driven object framework**: dispatch table `.rdata 0x1800b4988`,
-   per-type size dispatcher `0x4e970`, header getter `0x4eb50`.
-3. Hooking every dispatch-table member during a Mongolian shape showed they
-   are all **per-glyph scanning primitives** (9/glyph, 5/glyph — latin 0/glyph),
-   never once-per-lookup → **no standalone per-lookup dispatcher exists** to
-   self-hook, and the glyph-buffer snapshots between lookups have no clean
-   boundary function.
-4. A native per-lookup trace therefore is not obtainable from gdi32full
-   without a full framework RE (pydwshape/DWriteCore-scale effort).
+1. On Win11 24H2 `usp10.dll` forwards into `gdi32full.dll` (stripped PDBs);
+   `gdi32full.ScriptShapeOpenType` (`0x5a180`) is the outer layer.
+2. **Architecture correction (session 8)**: the real OT engine — Mongolian
+   contextual/GSUB application and glyph-buffer rewriting — lives in
+   **`TextShaping.dll`** (ImageBase `0x180000000`, ~1 MB), which calls back
+   into gdi32full's OT-table *getters* (`0x4b720/0x4e180/0x4cfb0` = parsed
+   GSUB/GPOS/GDEF header fetchers) via a thunk (`0x180054010`). So gdi32full's
+   "dispatch-table members" are font-table data providers, not the engine.
+3. TextShaping is where the shaping time goes (Mongolian 21906 vs latin 8246
+   RIP samples, more than gdi32full's 10070) with **Mongolian-exclusive hot
+   loops** (rva16 `0x25b00`, `0x1690`, `0x79f0`, `0xc180`, `0xd3e0`, …;
+   latin 0).
+4. But TextShaping's hot code is also **monolithically fused**: `0xb000–0xcc00`
+   is one giant function doing GSUB/GPOS table parse + the actual glyph-run
+   rewriting (`0xbc00–0xbf00`: 8-byte records `{u16 gid, u16 attr}`, output
+   cursor at `0xf8(%rbp)`, count in `r14`) + a recursive quicksort (`0xc100`).
+   Only leaf helpers are hookable → **no clean once-per-lookup boundary** there
+   either (same fused pattern as gdi32full).
+5. A native per-lookup trace is therefore not obtainable from the Windows
+   engine without instruction-level RE inside that monolithic apply function
+   (locate the lookup-index advance, then interior-hook the glyph buffer).
+   Known handles for that hunt: glyph buffer `0xf8(%rbp)`, count `r14`,
+   rewrite region `0xbc00–0xbf00`.
 
 The delivered per-lookup trace instead uses the **genuine Wine Uniscribe
 port** (`wineusp.dll`): byte-identical to usp10 on our corpus, per-lookup
