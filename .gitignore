@@ -212,3 +212,8 @@ python/tr_out.txt
 tools/wine_usp/matrix.txt
 tools/wine_usp/regress.txt
 tools/wine_usp/result.txt
+
+# --- native-RE investigation scratch (tools/native_spike) ---
+# disassembly dumps / RIP heatmaps / probe outputs; SPIKE.md is the kept doc
+tools/native_spike/*
+!tools/native_spike/SPIKE.md

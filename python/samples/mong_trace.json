@@ -1,3158 +1,3844 @@
 {
  "upem": 1000,
  "glyph_count": 907,
- "engine": "uniscribe",
  "stages": [
   {
-   "m": "Start of shaping",
-   "glyphs": [
-    {
-     "g": 6192,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 6176,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 1
-    },
-    {
-     "g": 6178,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 2
-    },
-    {
-     "g": 6188,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 3
-    },
-    {
-     "g": 6176,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 4
-    },
-    {
-     "g": 6184,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 5
-    }
-   ],
    "depth": 0,
-   "effective": true
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 673
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 277
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 295
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 461
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 277
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 350
+    }
+   ],
+   "m": "wineusp lookup cmap (item 0)"
   },
   {
-   "m": "start table GSUB script tag 'mong'",
-   "glyphs": [],
    "depth": 0,
-   "effective": false
-  },
-  {
-   "m": "start lookup 19 feature 'ccmp'",
+   "effective": true,
    "glyphs": [
     {
-     "g": 673,
+     "ax": 0,
+     "ay": 0,
      "cl": 0,
      "dx": 0,
      "dy": 0,
-     "ax": 0,
-     "ay": 0,
      "flags": 0,
-     "offset": 0
+     "g": 675
     },
     {
-     "g": 277,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
      "ax": 0,
      "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 295,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 461,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 277,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 350,
      "cl": 5,
      "dx": 0,
      "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
      "ax": 0,
      "ay": 0,
-     "flags": 3,
-     "offset": 5
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
     }
    ],
-   "depth": 1,
-   "effective": false
+   "m": "wineusp lookup ccmp#1/1 (item 0)"
   },
   {
-   "m": "start lookup 21 feature 'init'",
-   "glyphs": [
-    {
-     "g": 673,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 277,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 295,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 461,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 277,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 350,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 21 feature 'init'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 277,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 295,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 461,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 277,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 350,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 22 feature 'medi'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 277,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 295,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 461,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 277,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 350,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 22 feature 'medi'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 350,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 23 feature 'fina'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 350,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 23 feature 'fina'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 27 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 27 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 273,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 273,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 28 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 273,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 273,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 28 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 273,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 273,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 273,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    },
-    {
-     "g": 273,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 30 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 273,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 273,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 273,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    },
-    {
-     "g": 273,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 30 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 35 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 35 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 274,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 274,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 274,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 274,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 274,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    },
-    {
-     "g": 274,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 36 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 274,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 274,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 274,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 274,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 274,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    },
-    {
-     "g": 274,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 36 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 274,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 275,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 274,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 274,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 275,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    },
-    {
-     "g": 274,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 40 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 274,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 275,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 274,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 274,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 275,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    },
-    {
-     "g": 274,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 40 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 275,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 275,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 275,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 275,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 275,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    },
-    {
-     "g": 274,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 41 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 275,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 275,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 275,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 275,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 275,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    },
-    {
-     "g": 274,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 41 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 275,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 275,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 275,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 275,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 275,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 44 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 275,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 275,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 275,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 275,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 275,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 44 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 49 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 49 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 272,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 53 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 272,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 53 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 62 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 464,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 62 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 471,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 65 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 471,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 273,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 65 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 471,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "start lookup 70 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 302,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 471,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "end lookup 70 feature 'rclt'",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 1
-    },
-    {
-     "g": 303,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 2
-    },
-    {
-     "g": 471,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 0,
-     "ay": 0,
-     "flags": 3,
-     "offset": 5
-    }
-   ],
-   "depth": 1,
-   "effective": true
-  },
-  {
-   "m": "End of shaping",
-   "glyphs": [
-    {
-     "g": 675,
-     "cl": 0,
-     "dx": 0,
-     "dy": 0,
-     "ax": 681,
-     "ay": 0,
-     "flags": 0,
-     "offset": 0
-    },
-    {
-     "g": 281,
-     "cl": 1,
-     "dx": 0,
-     "dy": 0,
-     "ax": 284,
-     "ay": 0,
-     "flags": 1,
-     "offset": 1
-    },
-    {
-     "g": 303,
-     "cl": 2,
-     "dx": 0,
-     "dy": 0,
-     "ax": 722,
-     "ay": 0,
-     "flags": 1,
-     "offset": 2
-    },
-    {
-     "g": 471,
-     "cl": 3,
-     "dx": 0,
-     "dy": 0,
-     "ax": 568,
-     "ay": 0,
-     "flags": 1,
-     "offset": 3
-    },
-    {
-     "g": 281,
-     "cl": 4,
-     "dx": 0,
-     "dy": 0,
-     "ax": 284,
-     "ay": 0,
-     "flags": 1,
-     "offset": 4
-    },
-    {
-     "g": 351,
-     "cl": 5,
-     "dx": 0,
-     "dy": 0,
-     "ax": 427,
-     "ay": 0,
-     "flags": 1,
-     "offset": 5
-    }
-   ],
    "depth": 0,
-   "effective": true
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#1/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#2/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#3/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#4/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    }
+   ],
+   "m": "wineusp lookup rclt#5/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#6/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#7/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#8/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#9/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    }
+   ],
+   "m": "wineusp lookup rclt#10/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    }
+   ],
+   "m": "wineusp lookup rclt#11/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    }
+   ],
+   "m": "wineusp lookup rclt#12/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 274
+    }
+   ],
+   "m": "wineusp lookup rclt#13/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#14/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 275
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#15/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#16/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#17/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#18/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#19/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#20/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 272
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#21/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 272
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#22/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 272
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#23/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#24/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#25/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#26/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#27/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#28/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#29/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#30/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#31/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 464
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#32/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#33/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#34/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 273
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#35/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#36/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#37/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#38/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#39/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 302
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#40/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#41/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#42/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#43/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#44/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#45/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#46/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#47/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#48/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup rclt#49/49 (item 0)"
+  },
+  {
+   "depth": 0,
+   "effective": true,
+   "glyphs": [
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 675
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 303
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 471
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 281
+    },
+    {
+     "ax": 0,
+     "ay": 0,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "flags": 0,
+     "g": 351
+    }
+   ],
+   "m": "wineusp lookup final (item 0)"
   }
  ],
  "final": [
@@ -3168,7 +3854,7 @@
   {
    "ax": 284,
    "ay": 0,
-   "cl": 1,
+   "cl": 5,
    "dx": 0,
    "dy": 0,
    "flags": 0,
@@ -3177,7 +3863,7 @@
   {
    "ax": 722,
    "ay": 0,
-   "cl": 2,
+   "cl": 5,
    "dx": 0,
    "dy": 0,
    "flags": 0,
@@ -3186,7 +3872,7 @@
   {
    "ax": 568,
    "ay": 0,
-   "cl": 3,
+   "cl": 5,
    "dx": 0,
    "dy": 0,
    "flags": 0,
@@ -3195,7 +3881,7 @@
   {
    "ax": 284,
    "ay": 0,
-   "cl": 4,
+   "cl": 5,
    "dx": 0,
    "dy": 0,
    "flags": 0,
@@ -3212,136 +3898,9 @@
   }
  ],
  "messages": [
-  "final matches HarfBuzz exactly; per-lookup stages are the OT-conformant HarfBuzz timeline (usp10 exposes no per-lookup API on this OS).",
-  "start preprocess-text",
-  "end preprocess-text",
-  "start decompose",
-  "end decompose",
-  "start table GSUB script tag 'mong'",
-  "start lookup 19 feature 'ccmp'",
-  "skipped lookup 19 feature 'ccmp' because no glyph matches",
-  "end lookup 19 feature 'ccmp'",
-  "start reordering USE",
-  "skipped inserting dotted-circles because there is no broken syllables",
-  "end reordering USE",
-  "start lookup 20 feature 'isol'",
-  "end lookup 20 feature 'isol'",
-  "start lookup 21 feature 'init'",
-  "end lookup 21 feature 'init'",
-  "start lookup 22 feature 'medi'",
-  "end lookup 22 feature 'medi'",
-  "start lookup 23 feature 'fina'",
-  "end lookup 23 feature 'fina'",
-  "start lookup 24 feature 'rclt'",
-  "skipped lookup 24 feature 'rclt' because no glyph matches",
-  "end lookup 24 feature 'rclt'",
-  "start lookup 25 feature 'rclt'",
-  "skipped lookup 25 feature 'rclt' because no glyph matches",
-  "end lookup 25 feature 'rclt'",
-  "start lookup 26 feature 'rclt'",
-  "skipped lookup 26 feature 'rclt' because no glyph matches",
-  "end lookup 26 feature 'rclt'",
-  "start lookup 27 feature 'rclt'",
-  "end lookup 27 feature 'rclt'",
-  "start lookup 28 feature 'rclt'",
-  "end lookup 28 feature 'rclt'",
-  "start lookup 30 feature 'rclt'",
-  "end lookup 30 feature 'rclt'",
-  "start lookup 31 feature 'rclt'",
-  "end lookup 31 feature 'rclt'",
-  "start lookup 32 feature 'rclt'",
-  "end lookup 32 feature 'rclt'",
-  "start lookup 34 feature 'rclt'",
-  "end lookup 34 feature 'rclt'",
-  "start lookup 35 feature 'rclt'",
-  "end lookup 35 feature 'rclt'",
-  "start lookup 36 feature 'rclt'",
-  "end lookup 36 feature 'rclt'",
-  "start lookup 38 feature 'rclt'",
-  "end lookup 38 feature 'rclt'",
-  "start lookup 40 feature 'rclt'",
-  "end lookup 40 feature 'rclt'",
-  "start lookup 41 feature 'rclt'",
-  "end lookup 41 feature 'rclt'",
-  "start lookup 42 feature 'rclt'",
-  "end lookup 42 feature 'rclt'",
-  "start lookup 44 feature 'rclt'",
-  "end lookup 44 feature 'rclt'",
-  "start lookup 45 feature 'rclt'",
-  "end lookup 45 feature 'rclt'",
-  "start lookup 46 feature 'rclt'",
-  "skipped lookup 46 feature 'rclt' because no glyph matches",
-  "end lookup 46 feature 'rclt'",
-  "start lookup 47 feature 'rclt'",
-  "skipped lookup 47 feature 'rclt' because no glyph matches",
-  "end lookup 47 feature 'rclt'",
-  "start lookup 48 feature 'rclt'",
-  "end lookup 48 feature 'rclt'",
-  "start lookup 49 feature 'rclt'",
-  "end lookup 49 feature 'rclt'",
-  "start lookup 50 feature 'rclt'",
-  "end lookup 50 feature 'rclt'",
-  "start lookup 52 feature 'rclt'",
-  "end lookup 52 feature 'rclt'",
-  "start lookup 53 feature 'rclt'",
-  "end lookup 53 feature 'rclt'",
-  "start lookup 54 feature 'rclt'",
-  "end lookup 54 feature 'rclt'",
-  "start lookup 55 feature 'rclt'",
-  "end lookup 55 feature 'rclt'",
-  "start lookup 56 feature 'rclt'",
-  "skipped lookup 56 feature 'rclt' because no glyph matches",
-  "end lookup 56 feature 'rclt'",
-  "start lookup 57 feature 'rclt'",
-  "skipped lookup 57 feature 'rclt' because no glyph matches",
-  "end lookup 57 feature 'rclt'",
-  "start lookup 58 feature 'rclt'",
-  "end lookup 58 feature 'rclt'",
-  "start lookup 59 feature 'rclt'",
-  "skipped lookup 59 feature 'rclt' because no glyph matches",
-  "end lookup 59 feature 'rclt'",
-  "start lookup 60 feature 'rclt'",
-  "end lookup 60 feature 'rclt'",
-  "start lookup 61 feature 'rclt'",
-  "skipped lookup 61 feature 'rclt' because no glyph matches",
-  "end lookup 61 feature 'rclt'",
-  "start lookup 62 feature 'rclt'",
-  "end lookup 62 feature 'rclt'",
-  "start lookup 63 feature 'rclt'",
-  "end lookup 63 feature 'rclt'",
-  "start lookup 64 feature 'rclt'",
-  "end lookup 64 feature 'rclt'",
-  "start lookup 65 feature 'rclt'",
-  "end lookup 65 feature 'rclt'",
-  "start lookup 66 feature 'rclt'",
-  "end lookup 66 feature 'rclt'",
-  "start lookup 67 feature 'rclt'",
-  "end lookup 67 feature 'rclt'",
-  "start lookup 68 feature 'rclt'",
-  "end lookup 68 feature 'rclt'",
-  "start lookup 69 feature 'rclt'",
-  "skipped lookup 69 feature 'rclt' because no glyph matches",
-  "end lookup 69 feature 'rclt'",
-  "start lookup 70 feature 'rclt'",
-  "end lookup 70 feature 'rclt'",
-  "start lookup 71 feature 'rclt'",
-  "end lookup 71 feature 'rclt'",
-  "start lookup 72 feature 'rclt'",
-  "end lookup 72 feature 'rclt'",
-  "start lookup 73 feature 'rclt'",
-  "skipped lookup 73 feature 'rclt' because no glyph matches",
-  "end lookup 73 feature 'rclt'",
-  "start lookup 74 feature 'rclt'",
-  "end lookup 74 feature 'rclt'",
-  "start lookup 75 feature 'rclt'",
-  "skipped lookup 75 feature 'rclt' because no glyph matches",
-  "end lookup 75 feature 'rclt'",
-  "start lookup 81 feature 'rclt'",
-  "end lookup 81 feature 'rclt'",
-  "start lookup 82 feature 'rclt'",
-  "end lookup 82 feature 'rclt'",
-  "start lookup 83 feature 'rclt'",
-  "end lookup 83 feature 'rclt'",
-  "end table GSUB script tag 'mong'"
- ]
+  "genuine wineusp per-lookup trace (cmap + per-GSUB-lookup + final), recorded inside Wine's Uniscribe port; wineusp == usp10 on this corpus",
+  "Uniscribe item 0: script 62 tag 0x676e6f6d chars 0..6 -> 6 glyphs",
+  "wineusp per-lookup trace: 52 stages (cmap + GSUB lookups + final)"
+ ],
+ "engine": "wineusp"
 }

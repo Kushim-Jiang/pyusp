@@ -14,23 +14,31 @@ Uniscribe analogue of the pydwshape/DWriteCore tracer and the HarfBuzz engines.
 | PyO3 abi3 wheel (bundles usp10.dll) | DONE, verified |
 | `pe` signature scanner / relocation infra | DONE, verified on gdi32full |
 | `selfhook` inline-hook engine | compiled; target requires native-RE (below) |
-| **per-lookup trace (server-satisfying)** | **DONE** — `python/uniscribe_trace_shaper.py` |
-| native usp10 per-lookup hook | **blocked** (see RE findings) |
+| **per-lookup trace (server-satisfying)** | **DONE** — genuine wineusp (see below) |
+| native usp10 (gdi32full) per-lookup hook | **blocked** (SPIKE sessions 1–7: no once-per-lookup dispatcher) |
+| Wine GSUB engine deep fixes (rclt/T6/T8/marks) | DONE — Mongolian byte-identical to usp10 |
 
-### Per-lookup trace delivered (babelmap server contract)
+### Per-lookup trace delivered (babelmap server contract) — genuine, no HB
 
 `python/uniscribe_trace_shaper.py` (+ drop-in `python/babelmap_dropin/`,
 wiring doc `python/babelmap_wiring.md`, regression
 `python/test_trace_shaper.py`, sample `python/samples/mong_trace.json`):
 
-- `final` = **real Uniscribe** output (via the `pyusp` wheel).
-- `stages` = **per-lookup HarfBuzz timeline** (Crowbar format, per-feature
-  labels such as `init`/`medi`/`fina`/`rclt`), adopted only when a per-call
-  assertion proves HarfBuzz's final == Uniscribe's final exactly; otherwise it
-  falls back to Uniscribe's own single stage with a message.
-- Provenance is stated in `messages[0]` (never mislabelled as raw usp10
-  internals). Regression: Mongolian 36 stages (golden final), Latin 7, Arabic
-  17, Hebrew 6; `lastStage == final` for all.
+- The bundled `wineusp.dll` is **Wine's open-source Uniscribe port** compiled
+  standalone (LGPL 2.1+). After the GSUB engine deep fixes it is
+  **byte-identical to system usp10** on every case we test (Mongolian golden,
+  Latin, Arabic, Hebrew — same gids **and** advances).
+- `stages` = **genuine** cmap → per-GSUB-lookup → final snapshots recorded
+  *inside* the port (`tools/wine_usp/port/src/trace.c`) — no HarfBuzz proxy,
+  no adopted timeline; the stages come from the same code that produced
+  `final`. Crowbar format, per-feature labels such as `rclt`.
+- Default `backend="wineusp"` returns both from that engine. `backend="usp10"`
+  returns the authoritative Microsoft usp10 `final` and adopts the genuine
+  wineusp stages only when the two finals match exactly (asserted per call),
+  otherwise a single-stage Uniscribe trace with a message.
+- Regression: Mongolian **52** stages (golden final `[675,281,303,471,281,351]`),
+  Latin 5, Arabic 9, Hebrew 25; `lastStage == final` for all; genuine trace
+  asserted (`engine == "wineusp"`, ≥ 2 stages).
 
 ### Watershed evidence — usp10 final state converges with HarfBuzz
 
@@ -43,6 +51,10 @@ wiring doc `python/babelmap_wiring.md`, regression
 | arabic | `segoeui.ttf` `سلام` | ✅ |
 | hebrew | `segoeui.ttf` `שלום` | ✅ |
 | devanagari | `Nirmala.ttc` `कर्म` | ❌ structural (below) |
+
+(The trace source `wineusp.dll` is itself asserted byte-identical to usp10 on
+these same cases in `python/test_trace_shaper.py` — same gids and advances —
+so the per-lookup trace's `final` is also usp10's final.)
 
 **Devanagari finding**: usp10's OpenType engine only recognises *legacy* script
 tags (`deva`, …). Nirmala (like all modern Indic fonts) exposes only `dev2`;
@@ -65,17 +77,21 @@ usp10 could not shape these either), not a tracer bug.
 ### Why this matters for the per-lookup trace
 
 Uniscribe has no public buffer-message / per-feature callback, so a *native*
-per-lookup trace needs a self-hook of the internal single-lookup dispatcher
-inside **gdi32full.dll** — the same class of reverse-engineering that
-pydwshape's `build/dwc_poc` did for DWriteCore (frida probes + Ghidra, over a
-long effort). Public symbols are absent, so it must be found by
-behaviour/disassembly. **Session result**: main-thread Stalker (all call forms
-+ following every thread) still only observes ~5 direct calls inside
-`ScriptShapeOpenType` itself; the deep engine is reached indirectly / on a
-worker thread (gdi32full imports threadpool). A *native* usp10 per-lookup
-hook is therefore **not** completed — this is why the delivered per-lookup
-trace uses the HarfBuzz timeline under a verified-equal-final assertion
-(see Status).
+per-lookup trace would need a self-hook of the internal single-lookup
+dispatcher inside **gdi32full.dll** — the same class of reverse-engineering
+that pydwshape's `build/dwc_poc` did for DWriteCore (frida probes + Ghidra,
+over a long effort). Public symbols are absent, so it must be found by
+behaviour/disassembly. `tools/native_spike/SPIKE.md` (sessions 1–7)
+documented the full investigation: the OT engine is a **table-driven object
+framework** (dispatch table `.rdata 0x1800b4988`, per-type size dispatcher
+`0x4e970`, header getter `0x4eb50`) running inline on the shaping thread;
+hooking every dispatch-table member during a Mongolian shape showed they are
+all **per-glyph scanning primitives** (strictly 9/glyph, 5/glyph — not
+per-lookup). There is **no standalone once-per-lookup dispatcher to hook**, so
+a native per-lookup trace is not obtainable. The delivered per-lookup trace
+therefore comes from the **genuine Wine Uniscribe port** (`wineusp.dll`), which
+is byte-identical to usp10 on our corpus and records per-lookup stages by
+construction (see Status).
 
 ## Layout
 
@@ -91,8 +107,14 @@ trace uses the HarfBuzz timeline under a verified-equal-final assertion
   (`--scan-module <dll>` to pick the module to scan, default usp10.dll).
 - `python/pyusp-wheel/` — maturin abi3 wheel `pyusp`, bundles `usp10.dll`
   (copied from the OS by `python/build_wheel.ps1`; `NOTICE.md` documents the
-  app-local/system fallback). `python/pyusp/__init__.py` →
-  `pyusp.shape_with_uniscribe(font_bytes, text, ...)`.
+  app-local/system fallback) **and `wineusp.dll`** (standalone Wine Uniscribe
+  port that records the genuine per-lookup trace). `python/pyusp/__init__.py`
+  → `pyusp.shape_with_uniscribe(font_bytes, text, ..., backend=...)`.
+- `tools/wine_usp/` — the standalone Wine `dlls/gdi32/uniscribe` port
+  (`port/` builds `wineusp.dll`); `port/src/trace.c` is the in-engine
+  per-lookup stage recorder.
+- `tools/native_spike/` — gdi32full native-RE investigation (SPIKE.md,
+  sessions 1–7: thread model, dispatch table, per-glyph refutation).
 - `python/compare_pyusp.py` — uharfbuzz regression matrix (above).
 - `tools/get_usp10_pdb.py` — downloads usp10.pdb (kept in `tools/pdb/`).
 - `tools/pdb_strings.py` — dumps PDB identifier strings.
@@ -115,13 +137,22 @@ trace uses the HarfBuzz timeline under a verified-equal-final assertion
 - Advances are returned in font design units (lfHeight = −upem ⇒ 1 px ≈ 1
   unit), matching HarfBuzz's font units.
 
-## TODO — native usp10 per-lookup hook (optional, deep RE)
+## Native usp10 per-lookup hook — investigated, not feasible (SPIKE)
 
-1. Confirm where gdi32full runs the OT engine (suspected worker thread;
-   tools/frida_probe_calls.py follows every thread and still sees ~5 calls,
-   so cross-thread capture or full static disassembly of gdi32full is needed).
-2. Record its RVA + 12-byte prologue → fill the `HookSpec` in
-   `src/selfhook.rs`.
-3. Map the glyph-buffer object layout (record pointer / count / stride).
-4. Assemble per-lookup stages natively; validate against
-   `python/uniscribe_trace_shaper.py` output (same final).
+`tools/native_spike/SPIKE.md` (sessions 1–7) is the full record. Summary:
+
+1. On Win11 24H2 `usp10.dll` forwards into `gdi32full.dll` (stripped PDBs).
+2. The OT engine runs **inline on the shaping thread** (no threadpool), as a
+   **table-driven object framework**: dispatch table `.rdata 0x1800b4988`,
+   per-type size dispatcher `0x4e970`, header getter `0x4eb50`.
+3. Hooking every dispatch-table member during a Mongolian shape showed they
+   are all **per-glyph scanning primitives** (9/glyph, 5/glyph — latin 0/glyph),
+   never once-per-lookup → **no standalone per-lookup dispatcher exists** to
+   self-hook, and the glyph-buffer snapshots between lookups have no clean
+   boundary function.
+4. A native per-lookup trace therefore is not obtainable from gdi32full
+   without a full framework RE (pydwshape/DWriteCore-scale effort).
+
+The delivered per-lookup trace instead uses the **genuine Wine Uniscribe
+port** (`wineusp.dll`): byte-identical to usp10 on our corpus, per-lookup
+stages recorded by construction (`tools/wine_usp/port/src/trace.c`).
