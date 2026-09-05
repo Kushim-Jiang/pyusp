@@ -1,0 +1,996 @@
+// pyusp — Uniscribe (usp10) step-by-step OpenType shaping tracer (Rust).
+//
+// Milestone 1 (watershed probe): drive Uniscribe's *OpenType* shaping API
+// (ScriptItemizeOpenType → ScriptShapeOpenType → ScriptPlaceOpenType) on a
+// real GDI font and emit the **final** glyph run in the babelsoft
+// `/api/opentype/shape` schema, so usp10's terminal state can be compared
+// 1:1 against uharfbuzz / pydwshape goldens (the "is it worth going deeper"
+// check).
+//
+// usp10.dll is loaded *dynamically* (bundled copy preferred, system
+// fallback) rather than statically linked, so the same loaded module can be
+// self-hooked later (per-lookup trace) and so the wheel can ship an
+// app-local usp10.dll.
+
+#![allow(non_snake_case)]
+#![allow(clippy::missing_safety_doc)]
+
+use std::ffi::c_void;
+use std::mem;
+use std::ptr;
+
+use serde_json::{json, Value};
+use windows::core::{PCSTR, PCWSTR};
+use windows::Win32::Foundation::HMODULE;
+use windows::Win32::Globalization::{
+    GOFFSET, OPENTYPE_FEATURE_RECORD, SCRIPT_ANALYSIS, SCRIPT_CHARPROP, SCRIPT_CONTROL,
+    SCRIPT_GLYPHPROP, SCRIPT_ITEM, SCRIPT_STATE, SCRIPT_VISATTR, TEXTRANGE_PROPERTIES,
+};
+use windows::Win32::Graphics::Gdi::{
+    ABC, DEFAULT_CHARSET, DEFAULT_QUALITY, FR_PRIVATE, HDC, HFONT, HGDIOBJ, LOGFONTW,
+};
+use windows::Win32::Graphics::Gdi::{
+    AddFontResourceExW, CreateCompatibleDC, CreateFontIndirectW, DeleteDC, DeleteObject,
+    RemoveFontResourceExW, SelectObject,
+};
+use windows::Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW};
+
+pub mod pe;
+pub mod selfhook;
+
+// ---------------------------------------------------------------------------
+// SCRIPT_ANALYSIS / SCRIPT_STATE bit masks (usp10.h, 10.0.22621):
+//   SCRIPT_ANALYSIS : u16 { eScript:10 fRTL:1 fLayoutRTL:1 fLinkBefore:1
+//                           fLinkAfter:1 fLogicalOrder:1 fNoGlyphIndex:1 }
+//   SCRIPT_STATE    : u16 { uBidiLevel:5 ... fArabicNumContext:1(b11) ... }
+// ---------------------------------------------------------------------------
+const A_ESCRIPT_MASK: u16 = 0x03FF;
+const A_FRTL: u16 = 0x0400; // bit 10
+const A_FLOGICAL_ORDER: u16 = 0x4000; // bit 14
+const S_FARABICNUMCTX: u16 = 0x0800; // bit 11
+const S_UBIDILEVEL_MASK: u16 = 0x001F;
+
+const TAG_DFLT: u32 = 0x6466_6C74; // 'dflt' (big-endian chars as u32)
+const E_OUTOFMEMORY: i32 = -2147024882; // 0x8007000E
+const E_INVALIDARG: i32 = -2147024809; // 0x80070057
+
+#[inline]
+fn ana_script(a: &SCRIPT_ANALYSIS) -> u16 {
+    a._bitfield & A_ESCRIPT_MASK
+}
+#[inline]
+fn ana_rtl(a: &SCRIPT_ANALYSIS) -> bool {
+    a._bitfield & A_FRTL != 0
+}
+
+type HRES = i32;
+
+type FnItemizeOT = unsafe extern "system" fn(
+    *const u16,
+    i32,
+    i32,
+    *const SCRIPT_CONTROL,
+    *const SCRIPT_STATE,
+    *mut SCRIPT_ITEM,
+    *mut u32,
+    *mut i32,
+) -> HRES;
+type FnShapeOT = unsafe extern "system" fn(
+    HDC,
+    *mut *mut c_void,
+    *mut SCRIPT_ANALYSIS,
+    u32,
+    u32,
+    *const i32,
+    *const *const TEXTRANGE_PROPERTIES,
+    i32,
+    *const u16,
+    i32,
+    i32,
+    *mut u16,
+    *mut SCRIPT_CHARPROP,
+    *mut u16,
+    *mut SCRIPT_GLYPHPROP,
+    *mut i32,
+) -> HRES;
+type FnPlaceOT = unsafe extern "system" fn(
+    HDC,
+    *mut *mut c_void,
+    *mut SCRIPT_ANALYSIS,
+    u32,
+    u32,
+    *const i32,
+    *const *const TEXTRANGE_PROPERTIES,
+    i32,
+    *const u16,
+    *const u16,
+    *const SCRIPT_CHARPROP,
+    i32,
+    *const u16,
+    *const SCRIPT_GLYPHPROP,
+    i32,
+    *mut i32,
+    *mut GOFFSET,
+    *mut ABC,
+) -> HRES;
+type FnFreeCache = unsafe extern "system" fn(*mut *mut c_void) -> HRES;
+type FnScriptTags = unsafe extern "system" fn(
+    HDC,
+    *mut *mut c_void,
+    *const SCRIPT_ANALYSIS,
+    i32,
+    *mut u32,
+    *mut i32,
+) -> HRES;
+// Optional per-lookup trace sink exports from the Wine-based wineusp.dll
+// port (usp_trace_*). Absent on system usp10.dll / gdi32full forwarders.
+type FnTraceBegin = unsafe extern "system" fn() -> i32;
+type FnTraceCount = unsafe extern "system" fn() -> i32;
+type FnTraceStage = unsafe extern "system" fn(i32, *mut u8, i32, *mut i32, *mut *const u16) -> i32;
+type FnTraceStop = unsafe extern "system" fn();
+
+/// Dynamically-loaded handle to usp10.dll.
+pub struct Usp10 {
+    _module: HMODULE,
+    pub itemize_ot: FnItemizeOT,
+    pub shape_ot: FnShapeOT,
+    pub place_ot: FnPlaceOT,
+    pub free_cache: FnFreeCache,
+    pub script_tags: FnScriptTags,
+    /// Optional wineusp.dll per-lookup trace sink (None for system usp10).
+    pub trace_begin: Option<FnTraceBegin>,
+    pub trace_count: Option<FnTraceCount>,
+    pub trace_stage: Option<FnTraceStage>,
+    pub trace_stop: Option<FnTraceStop>,
+}
+
+fn hres_msg(hr: HRES) -> &'static str {
+    match hr {
+        0 => "S_OK",
+        E_OUTOFMEMORY => "E_OUTOFMEMORY",
+        E_INVALIDARG => "E_INVALIDARG",
+        _ => "HRESULT error",
+    }
+}
+
+fn hr_fmt(hr: HRES) -> String {
+    format!("{} (0x{:08X})", hres_msg(hr), hr as u32)
+}
+
+impl Usp10 {
+    pub fn module_base(&self) -> u64 {
+        self._module.0 as u64
+    }
+
+    /// Load usp10: `prefer` = explicit DLL path (bundled copy), else system.
+    pub unsafe fn load(prefer: Option<&str>) -> Result<Usp10, String> {
+        let dll: String = match prefer {
+            Some(p) => p.to_owned(),
+            None => "usp10.dll".to_owned(),
+        };
+        let w: Vec<u16> = dll.encode_utf16().chain(std::iter::once(0)).collect();
+        let module: HMODULE = LoadLibraryW(PCWSTR(w.as_ptr()))
+            .map_err(|e| format!("LoadLibraryW({dll}): {e}"))?;
+        if module.0.is_null() {
+            return Err(format!("LoadLibraryW({dll}) returned null handle"));
+        }
+        macro_rules! sym {
+            ($n:literal, $t:ty) => {{
+                let name = concat!($n, "\0");
+                let p = GetProcAddress(module, PCSTR(name.as_ptr()))
+                    .ok_or_else(|| format!("GetProcAddress({}) missing", $n))?;
+                mem::transmute::<unsafe extern "system" fn() -> isize, $t>(p)
+            }};
+        }
+        Ok(Usp10 {
+            _module: module,
+            itemize_ot: sym!("ScriptItemizeOpenType", FnItemizeOT),
+            shape_ot: sym!("ScriptShapeOpenType", FnShapeOT),
+            place_ot: sym!("ScriptPlaceOpenType", FnPlaceOT),
+            free_cache: sym!("ScriptFreeCache", FnFreeCache),
+            script_tags: sym!("ScriptGetFontScriptTags", FnScriptTags),
+            trace_begin: GetProcAddress(module, PCSTR(b"usp_trace_begin\0".as_ptr()))
+                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceBegin>(p)),
+            trace_count: GetProcAddress(module, PCSTR(b"usp_trace_count\0".as_ptr()))
+                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceCount>(p)),
+            trace_stage: GetProcAddress(module, PCSTR(b"usp_trace_stage\0".as_ptr()))
+                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceStage>(p)),
+            trace_stop: GetProcAddress(module, PCSTR(b"usp_trace_stop\0".as_ptr()))
+                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceStop>(p)),
+        })
+    }
+}
+
+fn hex_to_bytes(s: &str) -> Result<Vec<u8>, String> {
+    let clean: String = s.chars().filter(|c| !c.is_whitespace() && *c != ',').collect();
+    if clean.len() % 2 != 0 {
+        return Err("odd hex length".into());
+    }
+    (0..clean.len() / 2)
+        .map(|i| {
+            u8::from_str_radix(&clean[i * 2..i * 2 + 2], 16)
+                .map_err(|e| format!("bad hex at {i}: {e}"))
+        })
+        .collect()
+}
+
+/// RE helper: scan a loaded module (default usp10.dll) for all
+/// executable-section matches of a hex signature; returns RVAs.
+/// e.g. --scan-module gdi32full.dll --find-sig "41 57 41 56 41 55"
+pub fn scan_module_for_sig(module_path: Option<&str>, hexsig: &str) -> Result<Vec<u64>, String> {
+    let dll: String = module_path.map(|s| s.to_owned()).unwrap_or_else(|| "usp10.dll".into());
+    let w: Vec<u16> = dll.encode_utf16().chain(std::iter::once(0)).collect();
+    let module: HMODULE = unsafe { LoadLibraryW(PCWSTR(w.as_ptr())) }
+        .map_err(|e| format!("LoadLibraryW({dll}): {e}"))?;
+    let sig = hex_to_bytes(hexsig)?;
+    let rvas = unsafe { pe::find_all_sig_rvas(module.0 as u64, &sig) };
+    Ok(rvas)
+}
+
+// ---------------------------------------------------------------------------
+// sfnt helpers
+// ---------------------------------------------------------------------------
+fn be16(d: &[u8], o: usize) -> u16 {
+    ((d[o] as u16) << 8) | d[o + 1] as u16
+}
+fn be32(d: &[u8], o: usize) -> u32 {
+    ((d[o] as u32) << 24) | ((d[o + 1] as u32) << 16) | ((d[o + 2] as u32) << 8) | d[o + 3] as u32
+}
+
+/// (upem, glyph_count) from a (possibly TTC) sfnt blob.
+fn sfnt_meta(data: &[u8]) -> (u32, u32) {
+    if data.len() < 12 {
+        return (2048, 0);
+    }
+    let tag = &data[0..4];
+    let num = if tag == b"ttcf" {
+        if data.len() < 16 {
+            return (2048, 0);
+        }
+        let of = be32(data, 8) as usize;
+        if of + 12 > data.len() {
+            return (2048, 0);
+        }
+        be16(data, of + 4) as usize
+    } else if tag == b"OTTO" || tag == b"\x00\x01\x00\x00" || tag == b"true" || tag == b"typ1" {
+        0
+    } else {
+        return (2048, 0);
+    };
+    let ntables = be16(data, num + 4) as usize;
+    let mut head_off: Option<usize> = None;
+    let mut maxp_off: Option<usize> = None;
+    for i in 0..ntables {
+        let rec = num + 12 + i * 16;
+        if rec + 16 > data.len() {
+            break;
+        }
+        match &data[rec..rec + 4] {
+            b"head" => head_off = Some(be32(data, rec + 8) as usize),
+            b"maxp" => maxp_off = Some(be32(data, rec + 8) as usize),
+            _ => {}
+        }
+    }
+    let upem = head_off
+        .filter(|&o| o + 20 <= data.len())
+        .map(|o| be16(data, o + 18))
+        .unwrap_or(2048) as u32;
+    let nglyphs = maxp_off
+        .filter(|&o| o + 6 <= data.len())
+        .map(|o| be16(data, o + 4))
+        .unwrap_or(0) as u32;
+    (upem, nglyphs)
+}
+
+/// Extract the Windows family name (nameID 1, preferred; 16 fallback) from an
+/// sfnt blob — the face name to select via CreateFontIndirectW.
+fn sfnt_family(data: &[u8]) -> Option<String> {
+    if data.len() < 12 {
+        return None;
+    }
+    let tag = &data[0..4];
+    let num = if tag == b"ttcf" {
+        if data.len() < 16 {
+            return None;
+        }
+        let of = be32(data, 8) as usize;
+        if of + 12 > data.len() {
+            return None;
+        }
+        be16(data, of + 4) as usize
+    } else if tag == b"OTTO" || tag == b"\x00\x01\x00\x00" || tag == b"true" {
+        0
+    } else {
+        return None;
+    };
+    let ntables = be16(data, num + 4) as usize;
+    let mut name_off: Option<(usize, usize)> = None; // (offset, length)
+    for i in 0..ntables {
+        let rec = num + 12 + i * 16;
+        if rec + 16 > data.len() {
+            break;
+        }
+        if &data[rec..rec + 4] == b"name" {
+            name_off = Some((be32(data, rec + 8) as usize, be32(data, rec + 12) as usize));
+            break;
+        }
+    }
+    let (noff, nlen) = name_off?;
+    if noff + 6 > data.len() {
+        return None;
+    }
+    let count = be16(data, noff + 2) as usize;
+    let str_off = be16(data, noff + 4) as usize; // header stringOffset
+    let strings = noff + str_off;
+    // Prefer Windows platform (3) nameID 1 (GDI family); fall back to 16.
+    let mut best: Option<(u16, String)> = None; // (nameID, string)
+    for i in 0..count {
+        let rec = noff + 6 + i * 12;
+        if rec + 12 > data.len() || rec + 12 > noff + nlen {
+            break;
+        }
+        let platform = be16(data, rec);
+        let encoding = be16(data, rec + 2);
+        let name_id = be16(data, rec + 6);
+        let len = be16(data, rec + 8) as usize;
+        let off = be16(data, rec + 10) as usize;
+        // Windows platform 3 (enc 1 = BMP UTF-16BE, enc 10 = full UTF-16BE)
+        if platform != 3 || (encoding != 1 && encoding != 10) {
+            continue;
+        }
+        if name_id != 1 && name_id != 16 {
+            continue;
+        }
+        let so = strings + off;
+        if so + len > data.len() {
+            continue;
+        }
+        let mut s = String::new();
+        let mut k = so;
+        while k + 1 < so + len {
+            let u = ((data[k] as u32) << 8) | data[k + 1] as u32;
+            s.push(char::from_u32(u).unwrap_or('\u{FFFD}'));
+            k += 2;
+        }
+        if s.is_empty() {
+            continue;
+        }
+        let take = match best {
+            None => true,
+            Some((cur_id, _)) => (name_id == 1 && cur_id != 1) || (name_id == 16 && cur_id == 16 && false),
+        };
+        if take {
+            best = Some((name_id, s));
+        }
+    }
+    best.map(|(_, s)| s)
+}
+
+// ---------------------------------------------------------------------------
+// Options / result
+// ---------------------------------------------------------------------------
+pub struct ShapeOpts {
+    pub font: String,
+    pub text: String,
+    pub script: String,
+    pub language: String,
+    pub direction: String,
+    pub show_all: bool,
+    pub usp10_path: Option<String>,
+    pub features_arg: String,
+    /// Enable the wineusp per-lookup trace (no-op when the loaded DLL has no
+    /// usp_trace_* exports, e.g. system usp10.dll).
+    pub trace: bool,
+}
+
+fn feature_tag(tag: &str) -> u32 {
+    // OT 4CC, big-endian chars as u32 (same convention Uniscribe uses).
+    let mut b = [0u8; 4];
+    for (i, c) in tag.bytes().take(4).enumerate() {
+        b[i] = c;
+    }
+    u32::from_be_bytes(b)
+}
+
+/// Parse "+liga,-kern,ss01=2" style into feature records.
+fn parse_features(s: &str) -> Vec<(u32, i32)> {
+    let mut out = Vec::new();
+    for part in s.split(',').map(|x| x.trim()).filter(|x| !x.is_empty()) {
+        if let Some(rest) = part.strip_prefix('+') {
+            out.push((feature_tag(rest), 1));
+        } else if let Some(rest) = part.strip_prefix('-') {
+            out.push((feature_tag(rest), 0));
+        } else if let Some((tag, val)) = part.split_once('=') {
+            if let Ok(v) = val.trim().parse::<i32>() {
+                out.push((feature_tag(tag), v));
+            }
+        } else {
+            out.push((feature_tag(part), 1));
+        }
+    }
+    out
+}
+
+// ---------------------------------------------------------------------------
+// Shape driver
+// ---------------------------------------------------------------------------
+struct FontDc {
+    hdc: HDC,
+    hfont: HFONT,
+    prev: HGDIOBJ,
+    family: String,
+}
+
+/// Add a private font resource from `path`, then select it into a memory DC.
+unsafe fn make_font_dc(path: &str, data: &[u8]) -> Result<FontDc, String> {
+    let family = sfnt_family(data)
+        .unwrap_or_else(|| {
+            std::path::Path::new(path)
+                .file_stem()
+                .map(|s| s.to_string_lossy().into_owned())
+                .unwrap_or_else(|| "Arial".into())
+        });
+    // Debug knob: skip AddFontResourceExW (select the installed system font,
+    // like the reference python shaper does) when PYUSP_NO_PRIVATE is set.
+    let no_private = std::env::var("PYUSP_NO_PRIVATE").is_ok();
+    let w: Vec<u16> = path.encode_utf16().chain(std::iter::once(0)).collect();
+    let mut added = 0i32;
+    if !no_private {
+        added = AddFontResourceExW(PCWSTR(w.as_ptr()), FR_PRIVATE, Some(ptr::null()));
+    }
+    let hdc = CreateCompatibleDC(None);
+    if hdc.0.is_null() {
+        if added > 0 {
+            let _ = RemoveFontResourceExW(PCWSTR(w.as_ptr()), FR_PRIVATE.0 as u32, None);
+        }
+        return Err("CreateCompatibleDC failed".into());
+    }
+    let mut lf = LOGFONTW::default();
+    let upem = sfnt_meta(data).0;
+    // Debug knob: override the em pixel height (env PYUSP_EM_PX) to test
+    // whether ScriptPlace advances scale proportionally with font size.
+    let em_px: i32 = std::env::var("PYUSP_EM_PX")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(upem.max(1) as i32);
+    lf.lfHeight = -em_px;
+    lf.lfWeight = 400;
+    lf.lfCharSet = DEFAULT_CHARSET;
+    lf.lfQuality = DEFAULT_QUALITY;
+    let mut fn16 = [0u16; 32];
+    for (i, u) in family.encode_utf16().take(31).enumerate() {
+        fn16[i] = u;
+    }
+    lf.lfFaceName = fn16;
+    let hfont = CreateFontIndirectW(&lf);
+    if hfont.0.is_null() {
+        let _ = DeleteDC(hdc);
+        if added > 0 {
+            let _ = RemoveFontResourceExW(PCWSTR(w.as_ptr()), FR_PRIVATE.0 as u32, None);
+        }
+        return Err(format!("CreateFontIndirectW failed for face {:?}", family));
+    }
+    let prev = SelectObject(hdc, hfont);
+    Ok(FontDc {
+        hdc,
+        hfont,
+        prev,
+        family,
+    })
+}
+
+impl FontDc {
+    unsafe fn cleanup(&mut self, path: &str) {
+        let _ = SelectObject(self.hdc, self.prev);
+        let _ = DeleteObject(self.hfont);
+        let _ = DeleteDC(self.hdc);
+        if std::env::var("PYUSP_NO_PRIVATE").is_ok() {
+            return;
+        }
+        let w: Vec<u16> = path.encode_utf16().chain(std::iter::once(0)).collect();
+        let _ = RemoveFontResourceExW(PCWSTR(w.as_ptr()), FR_PRIVATE.0 as u32, None);
+    }
+}
+
+fn has_rtl(text: &[u16]) -> bool {
+    text.iter().any(|&c| {
+        (0x0590..=0x08FF).contains(&c)
+            || (0xFB1D..=0xFDFF).contains(&c)
+            || (0xFE70..=0xFEFC).contains(&c)
+    })
+}
+
+struct ShapeRun<'a> {
+    usp: &'a Usp10,
+    hdc: HDC,
+    psc: *mut *mut c_void,
+    trace_on: bool,
+    /// (stage-name, glyph-id run) captured from wineusp during ScriptShapeOpenType,
+    /// in the engine's (logical) order — same order as `glyphs` before RTL reversal.
+    trace_stages: Vec<(String, Vec<u16>)>,
+}
+
+impl<'a> ShapeRun<'a> {
+    /// Query the OT script tag for an itemized analysis. The font's own
+    /// script tags (ScriptGetFontScriptTags) are authoritative — e.g. a
+    /// modern Devanagari face lists 'dev2' while ScriptItemizeOpenType only
+    /// reports 'deva' from the code points. Fall back to the item tag.
+    unsafe fn resolve_script_tag(
+        &self,
+        psa: &SCRIPT_ANALYSIS,
+        item_tag: u32,
+    ) -> Result<u32, String> {
+        let mut tags = [0u32; 8];
+        let mut n = 0i32;
+        let hr = (self.usp.script_tags)(
+            self.hdc,
+            self.psc,
+            psa,
+            8,
+            tags.as_mut_ptr(),
+            &mut n,
+        );
+        if hr == 0 && n > 0 && tags[0] != 0 {
+            return Ok(tags[0]);
+        }
+        if item_tag != 0 {
+            return Ok(item_tag);
+        }
+        Ok(TAG_DFLT)
+    }
+
+    unsafe fn resolve_langsys(&self, _psa: &SCRIPT_ANALYSIS, _tag_script: u32) -> Result<u32, String> {
+        // Language-tag query (ScriptGetFontLanguageTags) is unreliable against
+        // installed fonts (returns USP_E_SCRIPT_NOT_IN_FONT 0x80040200 even
+        // when the OT tables exist). HarfBuzz/Uniscribe both default to the
+        // 'dflt' LangSys, so we use it unconditionally.
+        Ok(TAG_DFLT)
+    }
+
+    /// Shape one itemized run via ScriptShapeOpenType + ScriptPlaceOpenType.
+    #[allow(clippy::too_many_arguments)]
+    unsafe fn shape_item(
+        &mut self,
+        seg: &[u16],
+        item_tag: u32,
+        item_lang: u32,
+        psa: &mut SCRIPT_ANALYSIS,
+        upem: i64,
+        features: &[(u32, i32)],
+    ) -> Result<Vec<Value>, String> {
+        // Arm the wineusp per-lookup trace before shaping this run.
+        self.trace_stages.clear();
+        if self.trace_on {
+            if let Some(b) = self.usp.trace_begin {
+                (b)();
+            }
+        }
+        // Ask for logical-order glyph arrays (like HarfBuzz) so RTL runs can
+        // be compared 1:1. Preserve all flags ScriptItemize set.
+        psa._bitfield |= A_FLOGICAL_ORDER;
+
+        let cchars = seg.len() as i32;
+        let mut maxg = (cchars * 3 + 8).max(16);
+        let mut logclust = vec![0u16; cchars as usize];
+        let mut charprops = vec![SCRIPT_CHARPROP { _bitfield: 0 }; cchars as usize];
+        let mut glyphs: Vec<u16> = Vec::new();
+        let mut glyphprops: Vec<SCRIPT_GLYPHPROP> = Vec::new();
+        let mut cglyphs = 0i32;
+
+        // feature ranges (single range over the whole run when any feature)
+        let range_chars = [cchars];
+        let mut recs: Vec<OPENTYPE_FEATURE_RECORD> = Vec::new();
+        let mut range_prop: TEXTRANGE_PROPERTIES = TEXTRANGE_PROPERTIES {
+            potfRecords: ptr::null_mut(),
+            cotfRecords: 0,
+        };
+        let mut cranges = 0i32;
+        let mut rp_range: *const TEXTRANGE_PROPERTIES = ptr::null();
+        if !features.is_empty() {
+            for (tag, param) in features {
+                recs.push(OPENTYPE_FEATURE_RECORD {
+                    tagFeature: *tag,
+                    lParameter: *param,
+                });
+            }
+            range_prop.potfRecords = recs.as_mut_ptr();
+            range_prop.cotfRecords = recs.len() as i32;
+            rp_range = &range_prop;
+            cranges = 1;
+        }
+
+        // ScriptShapeOpenType with buffer growth.
+        loop {
+            glyphs.clear();
+            glyphs.resize(maxg as usize, 0);
+            glyphprops.clear();
+            glyphprops.resize(
+                maxg as usize,
+                SCRIPT_GLYPHPROP {
+                    sva: SCRIPT_VISATTR { _bitfield: 0 },
+                    reserved: 0,
+                },
+            );
+            let mut rp_arr: [*const TEXTRANGE_PROPERTIES; 1] = [rp_range];
+            let hr = (self.usp.shape_ot)(
+                self.hdc,
+                self.psc,
+                psa,
+                item_tag,
+                item_lang,
+                if cranges > 0 { range_chars.as_ptr() } else { ptr::null() },
+                if cranges > 0 { rp_arr.as_mut_ptr() } else { ptr::null() },
+                cranges,
+                seg.as_ptr(),
+                cchars,
+                maxg,
+                logclust.as_mut_ptr(),
+                charprops.as_mut_ptr(),
+                glyphs.as_mut_ptr(),
+                glyphprops.as_mut_ptr(),
+                &mut cglyphs,
+            );
+            if hr == 0 {
+                break;
+            }
+            if hr == E_OUTOFMEMORY {
+                // E_OUTOFMEMORY → grow
+                if maxg > 1 << 16 {
+                    return Err("ScriptShapeOpenType: glyph buffer overflow".into());
+                }
+                maxg *= 2;
+                // a retry re-shapes from scratch: reset the trace log
+                if self.trace_on {
+                    if let Some(b) = self.usp.trace_begin {
+                        (b)();
+                    }
+                }
+                continue;
+            }
+            return Err(format!(
+                "ScriptShapeOpenType tag={:#010x}: {}",
+                item_tag,
+                hr_fmt(hr)
+            ));
+        }
+        let n = cglyphs as usize;
+
+        // Drain the wineusp per-lookup trace (cmap → per-lookup → final).
+        if self.trace_on {
+            if let (Some(cnt), Some(stage), Some(stop)) =
+                (self.usp.trace_count, self.usp.trace_stage, self.usp.trace_stop)
+            {
+                let total = (cnt)().max(0) as i32;
+                for i in 0..total {
+                    let mut name = [0u8; 64];
+                    let mut gc: i32 = 0;
+                    let mut gp: *const u16 = ptr::null();
+                    let rc = (stage)(i, name.as_mut_ptr(), 64, &mut gc, &mut gp);
+                    if rc == 0 && gc > 0 && !gp.is_null() {
+                        let gids =
+                            std::slice::from_raw_parts(gp, gc as usize).to_vec();
+                        let nlen = name
+                            .iter()
+                            .position(|&b| b == 0)
+                            .unwrap_or(name.len());
+                        let nm =
+                            String::from_utf8_lossy(&name[..nlen]).into_owned();
+                        self.trace_stages.push((nm, gids));
+                    }
+                }
+                (stop)();
+            }
+        }
+
+        // placements
+        let mut advances = vec![0i32; n.max(1)];
+        let mut goff = vec![
+            GOFFSET { du: 0, dv: 0 };
+            n.max(1)
+        ];
+        let mut rp_arr: [*const TEXTRANGE_PROPERTIES; 1] = [rp_range];
+        let hr = (self.usp.place_ot)(
+            self.hdc,
+            self.psc,
+            psa,
+            item_tag,
+            item_lang,
+            if cranges > 0 { range_chars.as_ptr() } else { ptr::null() },
+            if cranges > 0 { rp_arr.as_mut_ptr() } else { ptr::null() },
+            cranges,
+            seg.as_ptr(),
+            logclust.as_ptr(),
+            charprops.as_ptr(),
+            cchars,
+            glyphs.as_ptr(),
+            glyphprops.as_ptr(),
+            n as i32,
+            advances.as_mut_ptr(),
+            goff.as_mut_ptr(),
+            ptr::null_mut(),
+        );
+        if hr != 0 {
+            return Err(format!("ScriptPlaceOpenType: {}", hr_fmt(hr)));
+        }
+
+        // cluster: char index → first glyph index (logical order)
+        let mut glyph_to_char: Vec<usize> = vec![usize::MAX; n];
+        for (ci, &gi) in logclust.iter().enumerate() {
+            let gi = gi as usize;
+            if gi < n && glyph_to_char[gi] == usize::MAX {
+                glyph_to_char[gi] = ci;
+            }
+        }
+        // lfHeight = -upem ⇒ 1 device px ≈ 1 font design unit, so advances are
+        // already in font units (same space HarfBuzz reports).
+        let _ = upem;
+        let mut out = Vec::with_capacity(n);
+        for gi in 0..n {
+            let cl = if glyph_to_char[gi] != usize::MAX {
+                glyph_to_char[gi]
+            } else {
+                (cchars.max(1) - 1) as usize
+            };
+            out.push(json!({
+                "g": glyphs[gi],
+                "cl": cl,
+                "dx": goff[gi].du,
+                "dy": goff[gi].dv,
+                "ax": advances[gi],
+                "ay": 0,
+                "flags": 0,
+            }));
+        }
+        Ok(out)
+    }
+}
+
+/// Shape `opts.text` with Uniscribe on `opts.font`; return the babelsoft
+/// `/api/opentype/shape` engine dict as JSON.
+pub fn shape_json(opts: ShapeOpts) -> Result<String, String> {
+    let v = shape_value(opts)?;
+    serde_json::to_string_pretty(&v).map_err(|e| e.to_string())
+}
+
+pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
+    // Probe hook: let an attached tracer attach before we shape
+    // (PYUSP_PRESLEEP_MS=<millis>). Debug/RE only.
+    if let Ok(ms) = std::env::var("PYUSP_PRESLEEP_MS") {
+        if let Ok(n) = ms.parse::<u64>() {
+            std::thread::sleep(std::time::Duration::from_millis(n));
+        }
+    }
+    let data = std::fs::read(&opts.font).map_err(|e| format!("read font {}: {e}", opts.font))?;
+    let (upem, nglyphs) = sfnt_meta(&data);
+
+    let usp = unsafe { Usp10::load(opts.usp10_path.as_deref()) }?;
+
+    // text → utf16
+    let text16: Vec<u16> = opts.text.encode_utf16().collect();
+    if text16.is_empty() {
+        return Err("empty text".into());
+    }
+    let base_level: u16 = match opts.direction.as_str() {
+        "rtl" => 1,
+        "ltr" => 0,
+        _ => {
+            if has_rtl(&text16) {
+                1
+            } else {
+                0
+            }
+        }
+    };
+
+    let mut fd = unsafe { make_font_dc(&opts.font, &data) }?;
+    let mut psc: *mut c_void = ptr::null_mut();
+    let mut run = ShapeRun {
+        usp: &usp,
+        hdc: fd.hdc,
+        psc: &mut psc,
+        trace_on: opts.trace,
+        trace_stages: Vec::new(),
+    };
+
+    let features = parse_features(&opts.features_arg);
+
+    let result = (|| -> Result<Value, String> {
+        // itemize (OpenType: gives per-item script tags)
+        let cchars = text16.len() as i32;
+        let cmax = (cchars * 2 + 8).max(16) as usize;
+        let mut items = vec![
+            SCRIPT_ITEM {
+                iCharPos: 0,
+                a: SCRIPT_ANALYSIS {
+                    _bitfield: 0,
+                    s: SCRIPT_STATE { _bitfield: 0 },
+                }
+            };
+            cmax + 1
+        ];
+        let mut script_tags = vec![0u32; cmax + 1];
+        let mut nitems = 0i32;
+        let ctrl = SCRIPT_CONTROL { _bitfield: 0 };
+        let mut state = SCRIPT_STATE { _bitfield: 0 };
+        state._bitfield = (state._bitfield & !S_UBIDILEVEL_MASK) | (base_level & S_UBIDILEVEL_MASK);
+        if base_level == 1 {
+            state._bitfield |= S_FARABICNUMCTX;
+        }
+        let hr = unsafe {
+            (usp.itemize_ot)(
+                text16.as_ptr(),
+                cchars,
+                cmax as i32,
+                &ctrl,
+                &state,
+                items.as_mut_ptr(),
+                script_tags.as_mut_ptr(),
+                &mut nitems,
+            )
+        };
+        if hr != 0 {
+            return Err(format!("ScriptItemizeOpenType: {}", hr_fmt(hr)));
+        }
+        let nitems = nitems.max(0) as usize;
+
+        let mut stages: Vec<Value> = Vec::new();
+        let mut final_glyphs: Vec<Value> = Vec::new();
+        let mut messages: Vec<String> = Vec::new();
+
+        for it in 0..nitems {
+            let item = items[it];
+            let start = item.iCharPos.max(0) as usize;
+            let end = if it + 1 < items.len() {
+                (items[it + 1].iCharPos).max(0) as usize
+            } else {
+                text16.len()
+            };
+            let end = end.min(text16.len()).max(start);
+            if end <= start {
+                continue;
+            }
+            let seg = &text16[start..end];
+            let mut psa = item.a;
+            let rtl = ana_rtl(&psa);
+            let script_code = ana_script(&psa);
+            let tag_script = unsafe {
+                run.resolve_script_tag(&psa, script_tags[it]).unwrap_or(0)
+            };
+            if tag_script == 0 {
+                messages.push(format!(
+                    "item {it}: script {script_code} no OT script tag — skipped"
+                ));
+                continue;
+            }
+            let tag_lang = unsafe { run.resolve_langsys(&psa, tag_script) }?;
+            let glyphs = unsafe {
+                run.shape_item(seg, tag_script, tag_lang, &mut psa, upem as i64, &features)?
+            };
+            let raw_trace = std::mem::take(&mut run.trace_stages);
+            let n = glyphs.len();
+            messages.push(format!(
+                "Uniscribe item {it}: script {script_code} tag {tag_script:#010x} chars {start}..{end} -> {n} glyphs{}",
+                if rtl { " (RTL, visual order out)" } else { "" }
+            ));
+            let logical_final = glyphs; // logical order, cl relative to seg
+            let mut with_cl = logical_final.clone();
+            // HarfBuzz/uharfbuzz store RTL glyph runs in *visual* order
+            // (left→right); we shape in logical order (fLogicalOrder), so
+            // reverse RTL runs at the boundary. Clusters stay logical char
+            // indices either way (same as HarfBuzz).
+            if rtl {
+                with_cl.reverse();
+            }
+            for g in with_cl.iter_mut() {
+                if let Some(cl) = g.get_mut("cl") {
+                    if let Some(c) = cl.as_i64() {
+                        *cl = json!(start as i64 + c);
+                    }
+                }
+            }
+            if raw_trace.is_empty() || !run.trace_on {
+                // No per-lookup trace available (system usp10 or trace off):
+                // a single whole-run stage.
+                stages.push(json!({
+                    "m": format!("Uniscribe shape item {it} (script {script_code}, tag {tag_script:#010x})"),
+                    "glyphs": with_cl,
+                    "depth": 0,
+                    "effective": true,
+                }));
+            } else {
+                // Genuine wineusp per-lookup trace: each captured run is in
+                // logical order; mirror the final run's transform (reverse
+                // RTL, then add the run start to every cluster).
+                let nfinal = logical_final.len();
+                let seg_len = seg.len().max(1);
+                messages.push(format!(
+                    "wineusp per-lookup trace: {} stages (cmap + GSUB lookups + final)",
+                    raw_trace.len()
+                ));
+                for (st_name, gids) in &raw_trace {
+                    let m = gids.len();
+                    let mut objs: Vec<Value> = if m == nfinal {
+                        // 1:1 with the final run: reuse the logical-order
+                        // final cluster for each glyph.
+                        gids.iter()
+                            .enumerate()
+                            .map(|(i, &g)| {
+                                let cl = logical_final
+                                    .get(i)
+                                    .and_then(|o| o.get("cl"))
+                                    .and_then(|c| c.as_i64())
+                                    .unwrap_or(0);
+                                json!({
+                                    "g": g,
+                                    "cl": cl,
+                                    "dx": 0,
+                                    "dy": 0,
+                                    "ax": 0,
+                                    "ay": 0,
+                                    "flags": 0,
+                                })
+                            })
+                            .collect()
+                    } else {
+                        // Count changed (ligature/expansion): monotonic approx
+                        // in logical order, relative cluster.
+                        gids.iter()
+                            .enumerate()
+                            .map(|(i, &g)| {
+                                let cl = ((i * seg_len) / m).min(seg_len - 1) as i64;
+                                json!({
+                                    "g": g,
+                                    "cl": cl,
+                                    "dx": 0,
+                                    "dy": 0,
+                                    "ax": 0,
+                                    "ay": 0,
+                                    "flags": 0,
+                                })
+                            })
+                            .collect()
+                    };
+                    if rtl {
+                        objs.reverse();
+                    }
+                    for o in objs.iter_mut() {
+                        if let Some(cl) = o.get_mut("cl") {
+                            if let Some(c) = cl.as_i64() {
+                                *cl = json!(start as i64 + c);
+                            }
+                        }
+                    }
+                    stages.push(json!({
+                        "m": format!("wineusp lookup {st_name} (item {it})"),
+                        "glyphs": objs,
+                        "depth": 0,
+                        "effective": true,
+                    }));
+                }
+            }
+            final_glyphs.extend(with_cl);
+        }
+        if final_glyphs.is_empty() {
+            return Err("no glyphs produced".into());
+        }
+        Ok(json!({
+            "upem": upem,
+            "glyph_count": nglyphs,
+            "engine": "uniscribe",
+            "stages": stages,
+            "final": final_glyphs,
+            "messages": messages,
+            "font_info": {
+                "family": fd.family,
+                "path": opts.font,
+            }
+        }))
+    })();
+
+    unsafe {
+        let _ = (usp.free_cache)(&mut psc);
+        fd.cleanup(&opts.font);
+    }
+
+    result
+}
