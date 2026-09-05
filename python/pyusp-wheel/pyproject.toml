@@ -1,0 +1,37 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "pyusp"
+version = "0.1.0"
+description = "Uniscribe (usp10) OpenType shaping tracer (babelsoft /api/opentype/shape compatible). WINDOWS ONLY."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+keywords = ["uniscribe", "usp10", "opentype", "shaping", "babelmap"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Text Processing :: Fonts",
+]
+
+[tool.maturin]
+module-name = "pyusp._pyusp"
+python-source = "python"
+bindings = "pyo3"
+features = ["pyo3/extension-module"]
+# Bundle an app-local copy of usp10.dll (+ notice) and the open-source
+# Wine Uniscribe port wineusp.dll (+ LGPL notice) into the wheel at
+# pyusp/. The engine prefers wineusp (redistributable, per-lookup trace) and
+# falls back to the bundled/system usp10.
+#   usp10.dll  — copy from System32 at build time (see README), dev/test only
+#   wineusp.dll — built from tools/wine_usp/port (see NOTICE-wineusp.md)
+include = [
+    "pyusp/usp10.dll",
+    "pyusp/NOTICE.md",
+    "pyusp/wineusp.dll",
+    "pyusp/NOTICE-wineusp.md",
+]

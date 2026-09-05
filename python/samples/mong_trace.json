@@ -1,0 +1,3347 @@
+{
+ "upem": 1000,
+ "glyph_count": 907,
+ "engine": "uniscribe",
+ "stages": [
+  {
+   "m": "Start of shaping",
+   "glyphs": [
+    {
+     "g": 6192,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 6176,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 1
+    },
+    {
+     "g": 6178,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 2
+    },
+    {
+     "g": 6188,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 3
+    },
+    {
+     "g": 6176,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 4
+    },
+    {
+     "g": 6184,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 5
+    }
+   ],
+   "depth": 0,
+   "effective": true
+  },
+  {
+   "m": "start table GSUB script tag 'mong'",
+   "glyphs": [],
+   "depth": 0,
+   "effective": false
+  },
+  {
+   "m": "start lookup 19 feature 'ccmp'",
+   "glyphs": [
+    {
+     "g": 673,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 277,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 295,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 461,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 277,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 350,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": false
+  },
+  {
+   "m": "start lookup 21 feature 'init'",
+   "glyphs": [
+    {
+     "g": 673,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 277,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 295,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 461,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 277,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 350,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 21 feature 'init'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 277,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 295,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 461,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 277,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 350,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 22 feature 'medi'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 277,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 295,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 461,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 277,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 350,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 22 feature 'medi'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 350,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 23 feature 'fina'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 350,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 23 feature 'fina'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 27 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 27 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 273,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 273,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 28 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 273,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 273,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 28 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 273,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 273,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 273,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    },
+    {
+     "g": 273,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 30 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 273,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 273,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 273,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    },
+    {
+     "g": 273,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 30 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 35 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 35 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 274,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 274,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 274,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 274,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 274,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    },
+    {
+     "g": 274,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 36 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 274,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 274,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 274,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 274,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 274,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    },
+    {
+     "g": 274,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 36 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 274,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 275,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 274,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 274,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 275,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    },
+    {
+     "g": 274,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 40 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 274,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 275,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 274,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 274,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 275,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    },
+    {
+     "g": 274,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 40 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 275,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 275,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 275,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 275,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 275,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    },
+    {
+     "g": 274,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 41 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 275,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 275,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 275,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 275,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 275,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    },
+    {
+     "g": 274,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 41 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 275,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 275,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 275,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 275,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 275,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 44 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 275,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 275,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 275,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 275,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 275,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 44 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 49 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 49 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 272,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 53 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 272,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 53 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 62 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 464,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 62 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 471,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 65 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 471,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 273,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 65 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 471,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "start lookup 70 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 302,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 471,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "end lookup 70 feature 'rclt'",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 1
+    },
+    {
+     "g": 303,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 2
+    },
+    {
+     "g": 471,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 0,
+     "ay": 0,
+     "flags": 3,
+     "offset": 5
+    }
+   ],
+   "depth": 1,
+   "effective": true
+  },
+  {
+   "m": "End of shaping",
+   "glyphs": [
+    {
+     "g": 675,
+     "cl": 0,
+     "dx": 0,
+     "dy": 0,
+     "ax": 681,
+     "ay": 0,
+     "flags": 0,
+     "offset": 0
+    },
+    {
+     "g": 281,
+     "cl": 1,
+     "dx": 0,
+     "dy": 0,
+     "ax": 284,
+     "ay": 0,
+     "flags": 1,
+     "offset": 1
+    },
+    {
+     "g": 303,
+     "cl": 2,
+     "dx": 0,
+     "dy": 0,
+     "ax": 722,
+     "ay": 0,
+     "flags": 1,
+     "offset": 2
+    },
+    {
+     "g": 471,
+     "cl": 3,
+     "dx": 0,
+     "dy": 0,
+     "ax": 568,
+     "ay": 0,
+     "flags": 1,
+     "offset": 3
+    },
+    {
+     "g": 281,
+     "cl": 4,
+     "dx": 0,
+     "dy": 0,
+     "ax": 284,
+     "ay": 0,
+     "flags": 1,
+     "offset": 4
+    },
+    {
+     "g": 351,
+     "cl": 5,
+     "dx": 0,
+     "dy": 0,
+     "ax": 427,
+     "ay": 0,
+     "flags": 1,
+     "offset": 5
+    }
+   ],
+   "depth": 0,
+   "effective": true
+  }
+ ],
+ "final": [
+  {
+   "ax": 681,
+   "ay": 0,
+   "cl": 0,
+   "dx": 0,
+   "dy": 0,
+   "flags": 0,
+   "g": 675
+  },
+  {
+   "ax": 284,
+   "ay": 0,
+   "cl": 1,
+   "dx": 0,
+   "dy": 0,
+   "flags": 0,
+   "g": 281
+  },
+  {
+   "ax": 722,
+   "ay": 0,
+   "cl": 2,
+   "dx": 0,
+   "dy": 0,
+   "flags": 0,
+   "g": 303
+  },
+  {
+   "ax": 568,
+   "ay": 0,
+   "cl": 3,
+   "dx": 0,
+   "dy": 0,
+   "flags": 0,
+   "g": 471
+  },
+  {
+   "ax": 284,
+   "ay": 0,
+   "cl": 4,
+   "dx": 0,
+   "dy": 0,
+   "flags": 0,
+   "g": 281
+  },
+  {
+   "ax": 427,
+   "ay": 0,
+   "cl": 5,
+   "dx": 0,
+   "dy": 0,
+   "flags": 0,
+   "g": 351
+  }
+ ],
+ "messages": [
+  "final matches HarfBuzz exactly; per-lookup stages are the OT-conformant HarfBuzz timeline (usp10 exposes no per-lookup API on this OS).",
+  "start preprocess-text",
+  "end preprocess-text",
+  "start decompose",
+  "end decompose",
+  "start table GSUB script tag 'mong'",
+  "start lookup 19 feature 'ccmp'",
+  "skipped lookup 19 feature 'ccmp' because no glyph matches",
+  "end lookup 19 feature 'ccmp'",
+  "start reordering USE",
+  "skipped inserting dotted-circles because there is no broken syllables",
+  "end reordering USE",
+  "start lookup 20 feature 'isol'",
+  "end lookup 20 feature 'isol'",
+  "start lookup 21 feature 'init'",
+  "end lookup 21 feature 'init'",
+  "start lookup 22 feature 'medi'",
+  "end lookup 22 feature 'medi'",
+  "start lookup 23 feature 'fina'",
+  "end lookup 23 feature 'fina'",
+  "start lookup 24 feature 'rclt'",
+  "skipped lookup 24 feature 'rclt' because no glyph matches",
+  "end lookup 24 feature 'rclt'",
+  "start lookup 25 feature 'rclt'",
+  "skipped lookup 25 feature 'rclt' because no glyph matches",
+  "end lookup 25 feature 'rclt'",
+  "start lookup 26 feature 'rclt'",
+  "skipped lookup 26 feature 'rclt' because no glyph matches",
+  "end lookup 26 feature 'rclt'",
+  "start lookup 27 feature 'rclt'",
+  "end lookup 27 feature 'rclt'",
+  "start lookup 28 feature 'rclt'",
+  "end lookup 28 feature 'rclt'",
+  "start lookup 30 feature 'rclt'",
+  "end lookup 30 feature 'rclt'",
+  "start lookup 31 feature 'rclt'",
+  "end lookup 31 feature 'rclt'",
+  "start lookup 32 feature 'rclt'",
+  "end lookup 32 feature 'rclt'",
+  "start lookup 34 feature 'rclt'",
+  "end lookup 34 feature 'rclt'",
+  "start lookup 35 feature 'rclt'",
+  "end lookup 35 feature 'rclt'",
+  "start lookup 36 feature 'rclt'",
+  "end lookup 36 feature 'rclt'",
+  "start lookup 38 feature 'rclt'",
+  "end lookup 38 feature 'rclt'",
+  "start lookup 40 feature 'rclt'",
+  "end lookup 40 feature 'rclt'",
+  "start lookup 41 feature 'rclt'",
+  "end lookup 41 feature 'rclt'",
+  "start lookup 42 feature 'rclt'",
+  "end lookup 42 feature 'rclt'",
+  "start lookup 44 feature 'rclt'",
+  "end lookup 44 feature 'rclt'",
+  "start lookup 45 feature 'rclt'",
+  "end lookup 45 feature 'rclt'",
+  "start lookup 46 feature 'rclt'",
+  "skipped lookup 46 feature 'rclt' because no glyph matches",
+  "end lookup 46 feature 'rclt'",
+  "start lookup 47 feature 'rclt'",
+  "skipped lookup 47 feature 'rclt' because no glyph matches",
+  "end lookup 47 feature 'rclt'",
+  "start lookup 48 feature 'rclt'",
+  "end lookup 48 feature 'rclt'",
+  "start lookup 49 feature 'rclt'",
+  "end lookup 49 feature 'rclt'",
+  "start lookup 50 feature 'rclt'",
+  "end lookup 50 feature 'rclt'",
+  "start lookup 52 feature 'rclt'",
+  "end lookup 52 feature 'rclt'",
+  "start lookup 53 feature 'rclt'",
+  "end lookup 53 feature 'rclt'",
+  "start lookup 54 feature 'rclt'",
+  "end lookup 54 feature 'rclt'",
+  "start lookup 55 feature 'rclt'",
+  "end lookup 55 feature 'rclt'",
+  "start lookup 56 feature 'rclt'",
+  "skipped lookup 56 feature 'rclt' because no glyph matches",
+  "end lookup 56 feature 'rclt'",
+  "start lookup 57 feature 'rclt'",
+  "skipped lookup 57 feature 'rclt' because no glyph matches",
+  "end lookup 57 feature 'rclt'",
+  "start lookup 58 feature 'rclt'",
+  "end lookup 58 feature 'rclt'",
+  "start lookup 59 feature 'rclt'",
+  "skipped lookup 59 feature 'rclt' because no glyph matches",
+  "end lookup 59 feature 'rclt'",
+  "start lookup 60 feature 'rclt'",
+  "end lookup 60 feature 'rclt'",
+  "start lookup 61 feature 'rclt'",
+  "skipped lookup 61 feature 'rclt' because no glyph matches",
+  "end lookup 61 feature 'rclt'",
+  "start lookup 62 feature 'rclt'",
+  "end lookup 62 feature 'rclt'",
+  "start lookup 63 feature 'rclt'",
+  "end lookup 63 feature 'rclt'",
+  "start lookup 64 feature 'rclt'",
+  "end lookup 64 feature 'rclt'",
+  "start lookup 65 feature 'rclt'",
+  "end lookup 65 feature 'rclt'",
+  "start lookup 66 feature 'rclt'",
+  "end lookup 66 feature 'rclt'",
+  "start lookup 67 feature 'rclt'",
+  "end lookup 67 feature 'rclt'",
+  "start lookup 68 feature 'rclt'",
+  "end lookup 68 feature 'rclt'",
+  "start lookup 69 feature 'rclt'",
+  "skipped lookup 69 feature 'rclt' because no glyph matches",
+  "end lookup 69 feature 'rclt'",
+  "start lookup 70 feature 'rclt'",
+  "end lookup 70 feature 'rclt'",
+  "start lookup 71 feature 'rclt'",
+  "end lookup 71 feature 'rclt'",
+  "start lookup 72 feature 'rclt'",
+  "end lookup 72 feature 'rclt'",
+  "start lookup 73 feature 'rclt'",
+  "skipped lookup 73 feature 'rclt' because no glyph matches",
+  "end lookup 73 feature 'rclt'",
+  "start lookup 74 feature 'rclt'",
+  "end lookup 74 feature 'rclt'",
+  "start lookup 75 feature 'rclt'",
+  "skipped lookup 75 feature 'rclt' because no glyph matches",
+  "end lookup 75 feature 'rclt'",
+  "start lookup 81 feature 'rclt'",
+  "end lookup 81 feature 'rclt'",
+  "start lookup 82 feature 'rclt'",
+  "end lookup 82 feature 'rclt'",
+  "start lookup 83 feature 'rclt'",
+  "end lookup 83 feature 'rclt'",
+  "end table GSUB script tag 'mong'"
+ ]
+}
