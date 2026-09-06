@@ -312,3 +312,20 @@ buffer"的代码；或先扩大 RIP 采样到**16B 内逐条**(改桶粒度/加�
   wineusp 的关系 = 状态等价（cmap/ccmp/final 三态逐一吻合），非逐 lookup 一一对应。
 - trace JSON 在 tools/native_spike/（gitignored）：native_trace_saihan.json /
   native_trace_sa.json / wine_trace.json。
+
+
+## 检查点11（2026-09-06）：native 逐 glyph → babelsoft trace 形状（转换器）
+- **tools/native_to_stages.py**：把 frida_ts_trace.py 的逐应用 JSON（native_trace_*.json）
+  重组成 babelsoft stages 结构：{upem, glyph_count, stages:[{depth,effective,glyphs,m}],
+  final}；stage glyph = {g,cl,ax/ay/dx/dy/flags:0}(与 wineusp stage 同，位置只在 final 有效)；
+  final 全字段(含 advance)+upem/glyph_count 从 pyusp shape JSON(--shape)合并。
+- **粒度=每个 app 一个 stage**（用户选定）：base/cmap stage(首个整 run enter)
+  + 26 个 app；逐 glyph 阶段(apps1-24)显示当前解析的单个 glyph[0..5]，整 run 阶段
+  (app25/26)显示全 run。lastStage==final 校验通过。
+- 产出 tools/native_spike/native_stages_saihan.json（gitignored scratch）：27 stages，
+  base=[673..350] → glyph[0..5]=673/277/295/461/277/350 → app25=[675,281,302,464,281,351]
+  → app26=[675,281,303,471,281,351]=final==usp10。top-level keys 与 wine_trace.json 同形，
+  stage/glyph keys 逐字段一致 → 可直接被 babelmap stages 消费者读取（无 lookup 名，m 用
+  "native TextShaping app N/N"）。
+- 边界重申：这是 native 可交付的逐 glyph/逐应用 stages（真实 gid、非 final-only）；
+  名字/lookup 粒度只来自 wineusp。
