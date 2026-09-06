@@ -111,7 +111,7 @@ mod loader {
 #[cfg(not(windows))]
 mod loader {
     use std::ffi::c_void;
-    pub type Lib = *mut c_void;
+    pub type Lib = crate::HMODULE;
 
     extern "C" {
         fn dlopen(filename: *const u8, flag: i32) -> *mut c_void;
@@ -135,16 +135,16 @@ mod loader {
         let c = std::ffi::CString::new(dll.as_str())
             .map_err(|e| format!("bad module path: {e}"))?;
         // RTLD_NOW = 2 on glibc and macOS.
-        let h = dlopen(c.as_ptr(), 2);
+        let h = dlopen(c.as_ptr() as *const u8, 2);
         if h.is_null() {
             return Err(format!("dlopen({dll}) failed (libwineusp not built?)"));
         }
-        Ok(h)
+        Ok(crate::HMODULE(h))
     }
 
     pub unsafe fn symbol(lib: Lib, name: &[u8]) -> Option<*const c_void> {
         // name must be NUL-terminated (callers pass b"name\0").
-        let p = dlsym(lib, name.as_ptr());
+        let p = dlsym(lib.0, name.as_ptr());
         if p.is_null() {
             None
         } else {
@@ -153,7 +153,7 @@ mod loader {
     }
 
     pub fn base(lib: Lib) -> u64 {
-        lib as u64
+        lib.0 as u64
     }
 
     // RE probe helpers are Windows-only; no-ops on POSIX (never armed there).
@@ -163,6 +163,44 @@ mod loader {
     pub unsafe fn module_handle_a(_name: &[u8]) -> u64 {
         0
     }
+}
+
+// Non-Windows no-op stand-in for worker_hook (the Windows in-process inline
+// hook machinery). The RE-probe call sites in shape_item/shape_value compile
+// against these signatures unchanged; on Linux/macOS the probe env vars are
+// never set, and even if they were the stubs return empty/no-ops.
+#[cfg(not(windows))]
+mod worker_hook {
+    pub struct Guard;
+    pub struct RipGuard;
+
+    pub fn arm_rvas(_base: u64, _rvas: &[(u64, usize)]) -> Guard {
+        Guard
+    }
+    pub fn arm_rvas_ret(_base: u64, _rvas: &[(u64, usize)]) -> Guard {
+        Guard
+    }
+    pub fn arm_rvas_run(_base: u64, _rvas: &[(u64, usize)]) -> Guard {
+        Guard
+    }
+    pub fn arm_once() {}
+    pub fn set_glyph_buf(_ptr: *mut u16, _cap: usize) {}
+    pub fn drain_run_steps() -> Vec<(u32, Vec<u16>)> {
+        Vec::new()
+    }
+    pub fn drain_glyph_steps() -> Vec<(u64, Vec<u16>)> {
+        Vec::new()
+    }
+    pub fn drain_rets() -> Vec<(u64, u64)> {
+        Vec::new()
+    }
+    pub fn drain() -> Vec<(u32, u64)> {
+        Vec::new()
+    }
+    pub fn rip_start() -> RipGuard {
+        RipGuard
+    }
+    pub fn rip_report() {}
 }
 
 // ---------------------------------------------------------------------------
@@ -733,18 +771,10 @@ impl<'a> ShapeRun<'a> {
             // TextShaping loads lazily during ScriptShapeOpenType, so force it.
             let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
             unsafe {
-                windows::Win32::System::LibraryLoader::LoadLibraryW(
-                    windows::core::PCWSTR(wname.as_ptr()),
-                );
+                let _ = loader::module_handle_wide_forced(&wname);
             }
             let cname = std::ffi::CString::new("TextShaping.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             if gbase != 0 {
                 eprintln!("[ts] base={gbase:#x} arming TextShaping probes");
                 let all: [(u64, usize); 7] = [
@@ -780,13 +810,7 @@ impl<'a> ShapeRun<'a> {
             // Capture the return address of each per-glyph getter fire so the
             // per-glyph driver loop (unique concentrated caller) is located.
             let cname = std::ffi::CString::new("gdi32full.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             if gbase != 0 {
                 self.callee_guard = Some(unsafe {
                     worker_hook::arm_rvas_ret(
@@ -797,13 +821,7 @@ impl<'a> ShapeRun<'a> {
             }
         } else if callee_probe || glyph_probe {
             let cname = std::ffi::CString::new("gdi32full.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             if gbase != 0 {
                 // Dispatch-table members only (guaranteed function entries).
                 // (rva, safe prologue prefix B from objdump of gdi32full 10.0.26100)
@@ -849,18 +867,10 @@ impl<'a> ShapeRun<'a> {
             // boundary. Signature from Win11 10.0.26100 TextShaping @0x15650.
             let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
             unsafe {
-                windows::Win32::System::LibraryLoader::LoadLibraryW(
-                    windows::core::PCWSTR(wname.as_ptr()),
-                );
+                let _ = loader::module_handle_wide_forced(&wname);
             }
             let cname = std::ffi::CString::new("TextShaping.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             if gbase != 0 {
                 // signature: push rbp; push rsi; push r12..r15;
                 // lea rbp,[rsp-0x218]; sub rsp,0x318 (full 24-byte prologue).
@@ -1071,13 +1081,7 @@ impl<'a> ShapeRun<'a> {
             let rets = worker_hook::drain_rets();
             use std::ffi::CString;
             let cname = CString::new("gdi32full.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             eprintln!("[ret] fires={} base={gbase:#x}", rets.len());
             let mut agg: std::collections::BTreeMap<(u64, u64), u32> =
                 std::collections::BTreeMap::new();
@@ -1090,29 +1094,38 @@ impl<'a> ShapeRun<'a> {
             // console-width truncation of the *> redirect.
             let mut modbase: u64 = 0;
             for ((rva, caller), c) in agg {
-                let (mbase, mname) = unsafe {
-                    let mut h = windows::Win32::Foundation::HMODULE(std::ptr::null_mut());
-                    let ok = windows::Win32::System::LibraryLoader::GetModuleHandleExW(
-                        windows::Win32::System::LibraryLoader::GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-                        windows::core::PCWSTR(caller as *const u16),
-                        &mut h,
-                    )
-                    .is_ok();
-                    if ok && !h.is_invalid() {
-                        let mut buf = [0u16; 260];
-                        let n = windows::Win32::System::LibraryLoader::GetModuleFileNameW(
-                            h,
-                            &mut buf,
-                        );
-                        let name = String::from_utf16_lossy(&buf[..n as usize]);
-                        let short = name
-                            .rsplit('\\')
-                            .next()
-                            .unwrap_or(&name)
-                            .to_string();
-                        (h.0 as u64, short)
-                    } else {
-                        (0, String::new())
+                let (mbase, mname) = {
+                    #[cfg(windows)]
+                    {
+                        unsafe {
+                            let mut h = windows::Win32::Foundation::HMODULE(std::ptr::null_mut());
+                            let ok = windows::Win32::System::LibraryLoader::GetModuleHandleExW(
+                                windows::Win32::System::LibraryLoader::GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+                                windows::core::PCWSTR(caller as *const u16),
+                                &mut h,
+                            )
+                            .is_ok();
+                            if ok && !h.is_invalid() {
+                                let mut buf = [0u16; 260];
+                                let n = windows::Win32::System::LibraryLoader::GetModuleFileNameW(
+                                    h,
+                                    &mut buf,
+                                );
+                                let name = String::from_utf16_lossy(&buf[..n as usize]);
+                                let short = name
+                                    .rsplit('\\')
+                                    .next()
+                                    .unwrap_or(&name)
+                                    .to_string();
+                                (h.0 as u64, short)
+                            } else {
+                                (0, String::new())
+                            }
+                        }
+                    }
+                    #[cfg(not(windows))]
+                    {
+                        (0u64, String::new())
                     }
                 };
                 if mbase != 0 {
@@ -1136,13 +1149,7 @@ impl<'a> ShapeRun<'a> {
             let evs = worker_hook::drain();
             use std::ffi::CString;
             let name = CString::new("gdi32full.dll").unwrap();
-            let base = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    name.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let base = unsafe { loader::module_handle_a(name.as_bytes_with_nul()) };
             eprintln!("[worker] events={} gdi32full_base={base:#x}", evs.len());
             for (tag, addr) in evs {
                 let t = match tag {
@@ -1278,9 +1285,7 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
     if std::env::var_os("PYUSP_PRELOAD_TS").is_some() {
         let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
         unsafe {
-            windows::Win32::System::LibraryLoader::LoadLibraryW(
-                windows::core::PCWSTR(wname.as_ptr()),
-            );
+            let _ = loader::module_handle_wide_forced(&wname);
         }
         // After forcing the engine DLL into memory, hold BEFORE the shape runs
         // so an external tracer (frida) can deterministically attach
