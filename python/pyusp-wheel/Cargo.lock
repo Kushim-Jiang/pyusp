@@ -142,7 +142,7 @@ dependencies = [
 
 [[package]]
 name = "pyusp"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde_json",
  "windows",
@@ -150,7 +150,7 @@ dependencies = [
 
 [[package]]
 name = "pyusp-wheel"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "pyo3",
  "pyusp",

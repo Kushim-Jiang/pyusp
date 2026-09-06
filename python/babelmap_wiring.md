@@ -22,7 +22,7 @@ adds `features`/`font_info`/`glyph_names`/`svg`. So:
 
 1. Install the native engine in the server env (Windows only):
    ```
-   pip install python/pyusp-wheel/dist/pyusp-0.1.0-cp39-abi3-win_amd64.whl
+   pip install python/pyusp-wheel/dist/pyusp-0.2.0-cp39-abi3-win_amd64.whl
    ```
    (the wheel bundles `wineusp.dll`, the standalone Wine Uniscribe port that
    records the genuine per-lookup trace; `uharfbuzz` is not used by this
