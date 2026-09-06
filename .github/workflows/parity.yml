@@ -65,7 +65,7 @@ jobs:
           install: >-
             mingw-w64-x86_64-gcc
 
-      - name: Compile + run parity driver (mingw) + compare
+      - name: Compile + run parity driver (mingw)
         shell: msys2 {0}
         working-directory: tools/wine_usp/port
         run: |
@@ -82,4 +82,8 @@ jobs:
               -o build/test_posix.exe
           FONT="$(cygpath -w "$(pwd)/../testdata/NotoSansMongolian-Regular.ttf")"
           ./build/test_posix.exe "$FONT" > build/trace.txt
-          python ../compare_trace.py build/trace.txt ../testdata/noto-saikhan-windows-golden.json
+
+      # msys2 has no python; run the checker with the runner's Windows python.
+      - name: Compare vs Windows golden
+        working-directory: tools/wine_usp/port
+        run: python ../compare_trace.py build/trace.txt ../testdata/noto-saikhan-windows-golden.json
