@@ -30,7 +30,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build libwineusp (native)
         run: sh tools/wine_usp/port/build_posix.sh
@@ -55,7 +55,7 @@ jobs:
     name: windows (mingw)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up MSYS2 (mingw-w64 gcc)
         uses: msys2/setup-msys2@v2
