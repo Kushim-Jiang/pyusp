@@ -19,6 +19,10 @@ on:
     branches: [main]
     paths:
       - "tools/wine_usp/**"
+      - "src/**"
+      - "python/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
       - ".github/workflows/parity.yml"
 
 jobs:
@@ -28,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-13]
     steps:
       - uses: actions/checkout@v5
 
@@ -87,3 +91,44 @@ jobs:
       - name: Compare vs Windows golden
         working-directory: tools/wine_usp/port
         run: python ../compare_trace.py build/trace.txt ../testdata/noto-saikhan-windows-golden.json
+
+  # Build the native abi3 wheel (with the bundled libwineusp) and run the
+  # installed-wheel python-level parity: pyusp.shape_with_uniscribe on
+  # Linux/macOS must reproduce the Windows golden trace exactly.
+  wheel:
+    name: wheel ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-13]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Build libwineusp (native)
+        run: sh tools/wine_usp/port/build_posix.sh
+
+      - name: Bundle libwineusp into the package dir
+        run: |
+          if [ "$(uname -s)" = "Darwin" ]; then
+            cp tools/wine_usp/port/libwineusp.dylib python/pyusp-wheel/python/pyusp/
+          else
+            cp tools/wine_usp/port/libwineusp.so python/pyusp-wheel/python/pyusp/
+          fi
+
+      - name: Install maturin
+        run: python -m pip install maturin
+
+      - name: Build wheel
+        working-directory: python/pyusp-wheel
+        run: python -m maturin build --release -o dist
+
+      - name: Install wheel
+        run: python -m pip install --force-reinstall --no-deps python/pyusp-wheel/dist/*.whl
+
+      - name: Python parity check (installed wheel)
+        run: python tools/wine_usp/check_wheel_parity.py
