@@ -20,6 +20,9 @@
 #include "winnls.h"
 #include "usp10.h"
 
+/* Self include guard: inside this implementation file the GDI identifiers are
+ * the REAL functions (used for fallback), so don't macro-remap them. */
+#define PORT_FONTBYTES_IMPL
 #include "fontbytes.h"
 
 /* ---- helpers ---- */
@@ -237,4 +240,82 @@ uint32_t usp_fb_advance(uint32_t glyph)
         if ((size_t)off + (size_t)(nh - 1) * 4 + 2 <= g_len) return be16(g_data + off + (nh - 1) * 4);
     }
     return 0;
+}
+
+/* ---- metrics + advance dispatch (bytes mode) ---- */
+
+int usp_fb_GetTextMetricsW(HDC hdc, LPTEXTMETRICW tm)
+{
+    if (!g_active) return (GetTextMetricsW)(hdc, tm);
+    memset(tm, 0, sizeof(TEXTMETRICW));
+    tm->tmHeight = (LONG)usp_fb_upem();
+    tm->tmAscent = (LONG)usp_fb_upem();
+    tm->tmPitchAndFamily = TMPF_TRUETYPE;
+    tm->tmCharSet = DEFAULT_CHARSET;
+    return 1;
+}
+
+UINT usp_fb_GetOutlineTextMetricsW(HDC hdc, UINT cb, LPOUTLINETEXTMETRICW otm)
+{
+    if (!g_active) return (GetOutlineTextMetricsW)(hdc, cb, otm);
+    return 0; /* no outline metrics in bytes mode; sc->otm stays NULL (unused) */
+}
+
+static BOOL abc_for_glyph(uint32_t glyph, LPABC abc)
+{
+    LONG w = (LONG)usp_fb_advance(glyph);
+    abc->abcA = 0;
+    abc->abcB = w;
+    abc->abcC = 0;
+    return TRUE;
+}
+
+BOOL usp_fb_GetCharABCWidthsI(HDC hdc, UINT first, UINT count, const WORD *pgi, LPABC abc)
+{
+    UINT i;
+    if (!g_active) return (GetCharABCWidthsI)(hdc, first, count, (LPWORD)pgi, abc);
+    for (i = 0; i < count; i++)
+    {
+        uint32_t g = pgi ? pgi[i] : (first + i);
+        abc_for_glyph(g, &abc[i]);
+    }
+    return TRUE;
+}
+
+BOOL usp_fb_GetCharABCWidthsW(HDC hdc, UINT first, UINT last, LPABC abc)
+{
+    UINT i;
+    if (!g_active) return (GetCharABCWidthsW)(hdc, first, last, abc);
+    for (i = first; i <= last && i - first < 65536; i++)
+    {
+        uint32_t g = cmap_lookup(i);
+        if (g == 0xFFFF) g = 0;
+        abc_for_glyph(g, &abc[i - first]);
+    }
+    return TRUE;
+}
+
+BOOL usp_fb_GetCharWidthI(HDC hdc, UINT first, UINT count, const WORD *pgi, LPINT out)
+{
+    UINT i;
+    if (!g_active) return (GetCharWidthI)(hdc, first, count, (LPWORD)pgi, out);
+    for (i = 0; i < count; i++)
+    {
+        uint32_t g = pgi ? pgi[i] : (first + i);
+        out[i] = (INT)usp_fb_advance(g);
+    }
+    return TRUE;
+}
+
+BOOL usp_fb_GetCharWidth32W(HDC hdc, UINT first, UINT last, LPINT out)
+{
+    UINT i;
+    if (!g_active) return (GetCharWidth32W)(hdc, first, last, out);
+    for (i = first; i <= last && i - first < 65536; i++)
+    {
+        uint32_t g = cmap_lookup(i);
+        if (g == 0xFFFF) g = 0;
+        out[i - first] = (INT)usp_fb_advance(g);
+    }
+    return TRUE;
 }

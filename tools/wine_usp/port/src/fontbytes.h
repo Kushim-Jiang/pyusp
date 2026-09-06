@@ -28,4 +28,24 @@ uint32_t usp_fb_GetTextCharsetInfo(HDC hdc, void *lpCs, uint32_t dwFlags);
 uint32_t usp_fb_upem(void);
 uint32_t usp_fb_advance(uint32_t glyph);
 
+/* Metrics + advance dispatch (bytes mode). */
+int usp_fb_GetTextMetricsW(HDC hdc, LPTEXTMETRICW tm);
+UINT usp_fb_GetOutlineTextMetricsW(HDC hdc, UINT cb, LPOUTLINETEXTMETRICW otm);
+BOOL usp_fb_GetCharABCWidthsI(HDC hdc, UINT first, UINT count, const WORD *pgi, LPABC abc);
+BOOL usp_fb_GetCharABCWidthsW(HDC hdc, UINT first, UINT last, LPABC abc);
+BOOL usp_fb_GetCharWidthI(HDC hdc, UINT first, UINT count, const WORD *pgi, LPINT out);
+BOOL usp_fb_GetCharWidth32W(HDC hdc, UINT first, UINT last, LPINT out);
+
+/* In the implementation file (PORT_FONTBYTES_IMPL) keep the real gdi32 names so
+ * fallback calls reach gdi32; everywhere else remap the font GDI calls to the
+ * dispatchers so bytes mode is honoured without touching the Wine call sites. */
+#ifndef PORT_FONTBYTES_IMPL
+#define GetTextMetricsW usp_fb_GetTextMetricsW
+#define GetOutlineTextMetricsW usp_fb_GetOutlineTextMetricsW
+#define GetCharABCWidthsI usp_fb_GetCharABCWidthsI
+#define GetCharABCWidthsW usp_fb_GetCharABCWidthsW
+#define GetCharWidthI usp_fb_GetCharWidthI
+#define GetCharWidth32W usp_fb_GetCharWidth32W
+#endif
+
 #endif /* PORT_FONTBYTES_H */

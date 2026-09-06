@@ -786,9 +786,16 @@ static HRESULT init_script_cache(const HDC hdc, SCRIPT_CACHE *psc)
 
     if (!psc) return E_INVALIDARG;
     if (*psc) return S_OK;
-    if (!hdc) return E_PENDING;
+    if (!hdc && !usp_font_bytes_active()) return E_PENDING;
 
-    if (!GetObjectW(GetCurrentObject(hdc, OBJ_FONT), sizeof(lf), &lf))
+    if (usp_font_bytes_active() && !hdc)
+    {
+        /* bytes mode: no real DC/font; synthesize the LOGFONT cache key */
+        memset(&lf, 0, sizeof(lf));
+        lf.lfHeight = -(LONG)usp_fb_upem();
+        lstrcpynW(lf.lfFaceName, L"pyusp", LF_FACESIZE - 1);
+    }
+    else if (!GetObjectW(GetCurrentObject(hdc, OBJ_FONT), sizeof(lf), &lf))
     {
         return E_INVALIDARG;
     }
@@ -3166,7 +3173,7 @@ HRESULT WINAPI ScriptShapeOpenType( HDC hdc, SCRIPT_CACHE *psc,
                 if (!(pwOutGlyphs[g] = get_cache_glyph(psc, chInput)))
                 {
                     WORD glyph;
-                    if (!hdc)
+                    if (!hdc && !usp_font_bytes_active())
                     {
                         free(rChars);
                         return E_PENDING;
@@ -3406,7 +3413,7 @@ HRESULT WINAPI ScriptPlaceOpenType( HDC hdc, SCRIPT_CACHE *psc, SCRIPT_ANALYSIS 
 
         if (hr == S_FALSE)
         {
-            if (!hdc) return E_PENDING;
+            if (!hdc && !usp_font_bytes_active()) return E_PENDING;
             if (get_cache_pitch_family(psc) & TMPF_TRUETYPE)
             {
                 if (!GetCharABCWidthsW(hdc, pwGlyphs[i], pwGlyphs[i], &abc)) return S_FALSE;
@@ -3421,7 +3428,7 @@ HRESULT WINAPI ScriptPlaceOpenType( HDC hdc, SCRIPT_CACHE *psc, SCRIPT_ANALYSIS 
         }
         else if (!get_cache_glyph_widths(psc, glyph, &abc))
         {
-            if (!hdc) return E_PENDING;
+            if (!hdc && !usp_font_bytes_active()) return E_PENDING;
             if (get_cache_pitch_family(psc) & TMPF_TRUETYPE)
             {
                 if (!GetCharABCWidthsI(hdc, glyph, 1, NULL, &abc)) return S_FALSE;
