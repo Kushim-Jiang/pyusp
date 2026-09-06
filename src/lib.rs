@@ -714,11 +714,18 @@ impl<'a> ShapeRun<'a> {
                 .unwrap_or(0)
             };
             if gbase != 0 {
-                // signature: push rbp; push rsi; push r12; push r13; push r14;
-                // push r15; lea rbp,[rsp-0x218] (first 13 bytes)
-                const SIG: [u8; 13] = [
+                // signature: push rbp; push rsi; push r12..r15;
+                // lea rbp,[rsp-0x218]; sub rsp,0x318 (full 24-byte prologue).
+                // Using the FULL prologue (incl. the validated 0x218/0x318
+                // frame offsets) intentionally EXCLUDES builds whose entry has
+                // the same 6-push shape but a different internal layout (e.g.
+                // Win11 22H2 22621 matches the 13-byte prefix but not the
+                // offsets) — those are not runtime-verified here, so they fall
+                // back instead of being hooked on assumptions.
+                const SIG: [u8; 24] = [
                     0x40, 0x55, 0x56, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41,
-                    0x57, 0x48, 0x8D,
+                    0x57, 0x48, 0x8D, 0xAC, 0x24, 0xE8, 0xFD, 0xFF, 0xFF, 0x48,
+                    0x81, 0xEC, 0x18, 0x03,
                 ];
                 let basep = gbase as *const u8;
                 unsafe fn r16(p: *const u8) -> u16 {
