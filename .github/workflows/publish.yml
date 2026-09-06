@@ -46,6 +46,11 @@ jobs:
           - os: macos-latest
             lib: libwineusp.dylib
     runs-on: ${{ matrix.os }}
+    # bash for every step: pwsh (windows runner) does NOT expand globs for
+    # native commands, so `dist/*.whl` reached pip/twine as a literal '*'.
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v5
 
@@ -78,7 +83,7 @@ jobs:
         run: python tools/wine_usp/check_wheel_parity.py
 
       - name: Upload wheel
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: wheels-${{ matrix.os }}
           path: python/pyusp-wheel/dist/*.whl
@@ -89,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           pattern: wheels-*
           merge-multiple: true
