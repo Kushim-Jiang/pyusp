@@ -555,6 +555,12 @@ pub struct ShapeOpts {
     /// is the same code path Linux/macOS use — fully parity-checked on
     /// Windows against the GDI reference (tools/wine_usp/port/test_bytesmode).
     pub wine_bytes: bool,
+    /// Shape via the **system Microsoft TextShaping engine** (Windows x64):
+    /// drive system usp10 with a real GDI font and hook TextShaping.dll's OT
+    /// apply driver to capture a native per-application glyph-run trace
+    /// (stages named "textshaping apply N"). Windows-only; errors when the
+    /// local TextShaping.dll is outside the supported (validated) set.
+    pub textshaping: bool,
 }
 
 fn feature_tag(tag: &str) -> u32 {
@@ -695,6 +701,11 @@ struct ShapeRun<'a> {
     /// (stage-name, glyph-id run) captured from wineusp during ScriptShapeOpenType,
     /// in the engine's (logical) order — same order as `glyphs` before RTL reversal.
     trace_stages: Vec<(String, Vec<u16>)>,
+    /// textshaping backend: capture the native TextShaping per-application
+    /// glyph-run trace (backend="textshaping" only).
+    native: bool,
+    native_armed: bool,
+    native_stages: Vec<(String, Vec<u16>)>,
     /// RE probe guard (PYUSP_CALLEE_PROBE) — keeps callee hooks armed.
     callee_guard: Option<worker_hook::Guard>,
 }
@@ -749,6 +760,8 @@ impl<'a> ShapeRun<'a> {
     ) -> Result<Vec<Value>, String> {
         // Arm the wineusp per-lookup trace before shaping this run.
         self.trace_stages.clear();
+        self.native_stages.clear();
+        self.native_armed = false;
         if self.trace_on {
             if let Some(b) = self.usp.trace_begin {
                 (b)();
@@ -764,7 +777,8 @@ impl<'a> ShapeRun<'a> {
         let ret_probe = std::env::var_os("PYUSP_RET_PROBE").is_some();
         let ts_probe = std::env::var_os("PYUSP_TS_PROBE").is_some();
         let ts_ret = std::env::var_os("PYUSP_TS_RET").is_some();
-        let native_run = std::env::var_os("PYUSP_NATIVE_RUN").is_some();
+        let native_run =
+            std::env::var_os("PYUSP_NATIVE_RUN").is_some() || self.native;
         if ts_probe {
             // TextShaping is the real OT engine; count fires of its candidate
             // apply-driver / parse entries to find the per-lookup frequency.
@@ -863,8 +877,10 @@ impl<'a> ShapeRun<'a> {
             // (6 pushes + `lea rbp,[rsp-0x218]; sub rsp,0x318`). This supports any
             // Windows build whose engine keeps that prologue, and degrades
             // gracefully (no native stages) when it is not found. The hooked
-            // prologue is 6 bytes (push rbp/rsi/r12/r13) -> clean trampoline
-            // boundary. Signature from Win11 10.0.26100 TextShaping @0x15650.
+            // prologue is 5 bytes (push rbp; push rsi; push r12 — an exact
+            // instruction boundary; the 6th byte is the REX prefix of push r13,
+            // so 6 would replay a partial instruction and corrupt the stack).
+            // Signature from Win11 10.0.26100 TextShaping @0x15650.
             let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
             unsafe {
                 let _ = loader::module_handle_wide_forced(&wname);
@@ -874,12 +890,15 @@ impl<'a> ShapeRun<'a> {
             if gbase != 0 {
                 // signature: push rbp; push rsi; push r12..r15;
                 // lea rbp,[rsp-0x218]; sub rsp,0x318 (full 24-byte prologue).
-                // Using the FULL prologue (incl. the validated 0x218/0x318
-                // frame offsets) intentionally EXCLUDES builds whose entry has
-                // the same 6-push shape but a different internal layout (e.g.
-                // Win11 22H2 22621 matches the 13-byte prefix but not the
-                // offsets) — those are not runtime-verified here, so they fall
-                // back instead of being hooked on assumptions.
+                // Instruction boundaries within the 6 pushes are at 2,3,5,7,9,11
+                // bytes (r12..r15 pushes are 41+reg = 2 bytes), so the replay
+                // prefix must be a boundary — 5 bytes (three pushes) is the
+                // largest clean prefix < 5+2. Using the FULL prologue (incl. the
+                // validated 0x218/0x318 frame offsets) intentionally EXCLUDES
+                // builds whose entry has the same 6-push shape but a different
+                // internal layout (e.g. Win11 22H2 22621 matches the 13-byte
+                // prefix but not the offsets) — those are not runtime-verified
+                // here, so they fall back instead of being hooked on assumptions.
                 const SIG: [u8; 24] = [
                     0x40, 0x55, 0x56, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41,
                     0x57, 0x48, 0x8D, 0xAC, 0x24, 0xE8, 0xFD, 0xFF, 0xFF, 0x48,
@@ -919,8 +938,9 @@ impl<'a> ShapeRun<'a> {
                         "[nativerun] base={gbase:#x} sig-driver rva={rva:#x} (img {img_size:#x})"
                     );
                     self.callee_guard = Some(unsafe {
-                        worker_hook::arm_rvas_run(gbase, &[(rva, 6)])
+                        worker_hook::arm_rvas_run(gbase, &[(rva, 5)])
                     });
+                    self.native_armed = true;
                 } else {
                     eprintln!(
                         "[nativerun] TextShaping driver signature not found (img {img_size:#x}) — no native stages on this build"
@@ -1027,6 +1047,18 @@ impl<'a> ShapeRun<'a> {
         // dump the glyph-run state at every TextShaping 0x15650 application and
         // validate the final captured run equals the shaped glyph output.
         if native_run {
+            // backend="textshaping" is a *supported-version* contract: if the
+            // driver was never armed (signature not found / TextShaping not
+            // loaded) fail loudly instead of silently returning no trace.
+            if self.native && !self.native_armed {
+                return Err(
+                    "TextShaping native trace: this build of TextShaping.dll is not in \
+                     the supported set (validated: Win11 24H2 / 10.0.26100 x64 driver \
+                     layout). Use backend='wineusp' (cross-platform per-lookup) or \
+                     'usp10' (single-stage)."
+                        .into(),
+                );
+            }
             let steps = worker_hook::drain_run_steps();
             eprintln!("[nativerun] apps={}", steps.len());
             let fin: Vec<u16> = glyphs[..n].to_vec();
@@ -1049,6 +1081,33 @@ impl<'a> ShapeRun<'a> {
                     .map(|s| s.1 == fin)
                     .unwrap_or(false)
             );
+            // Structured native per-application trace for backend="textshaping".
+            // Cross-check: the last captured apply run must equal the engine's
+            // final shaped run. A drift (capture stops before the engine's last
+            // apply step) means this TextShaping build drives that step through
+            // a different path, so the captured timeline is not trustworthy here
+            // — refuse rather than return misleading stages.
+            if self.native {
+                let ok = steps
+                    .last()
+                    .map(|s| s.1 == fin)
+                    .unwrap_or(false);
+                if !ok {
+                    return Err(
+                        "TextShaping native trace cross-check failed: no OT \
+                         application was captured, or the captured final run \
+                         differs from the engine's shaped output (this \
+                         TextShaping.dll build is outside the validated set: \
+                         Win11 24H2 / 10.0.26100 x64). Use backend='wineusp' or \
+                         'usp10'."
+                            .into(),
+                    );
+                }
+                for (k, (_, gids)) in steps.iter().enumerate() {
+                    self.native_stages
+                        .push((format!("apply {}", k + 1), gids.clone()));
+                }
+            }
         }
 
         // Glyph in-place probe report: dedupe consecutive buffer states across
@@ -1299,6 +1358,17 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
     let data = std::fs::read(&opts.font).map_err(|e| format!("read font {}: {e}", opts.font))?;
     let (upem, nglyphs) = sfnt_meta(&data);
 
+    // backend="textshaping" drives the Windows TextShaping engine in-process;
+    // that machinery is Windows/x64-only (worker_hook). Refuse clearly elsewhere.
+    if opts.textshaping && cfg!(not(windows)) {
+        return Err(
+            "backend='textshaping' is Windows-only (it drives the system TextShaping \
+             engine via usp10); on this platform use backend='wineusp' for the \
+             cross-platform per-lookup trace."
+                .into(),
+        );
+    }
+
     let usp = unsafe { Usp10::load(opts.usp10_path.as_deref()) }?;
 
     // text → utf16
@@ -1323,7 +1393,13 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
     // hdc — the same path Linux/macOS use (no GDI font/DC needed). On
     // non-Windows this is the ONLY path (there is no GDI/AddFontResource).
     #[cfg(windows)]
-    let wine_bytes = opts.wine_bytes && usp.set_font_bytes.is_some();
+    let wine_bytes = if opts.textshaping {
+        // textshaping needs the real GDI font + system usp10 path (the native
+        // engine lives in TextShaping.dll, reached through usp10 with a DC).
+        false
+    } else {
+        opts.wine_bytes && usp.set_font_bytes.is_some()
+    };
     #[cfg(not(windows))]
     let wine_bytes = if usp.set_font_bytes.is_some() {
         true
@@ -1365,6 +1441,9 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
         psc: &mut psc,
         trace_on: opts.trace,
         trace_stages: Vec::new(),
+        native: opts.textshaping && opts.trace,
+        native_armed: false,
+        native_stages: Vec::new(),
         callee_guard: None,
     };
 
@@ -1448,7 +1527,11 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
             let glyphs = unsafe {
                 run.shape_item(seg, tag_script, tag_lang, &mut psa, upem as i64, &features)?
             };
-            let raw_trace = std::mem::take(&mut run.trace_stages);
+            let raw_trace = if run.native {
+                std::mem::take(&mut run.native_stages)
+            } else {
+                std::mem::take(&mut run.trace_stages)
+            };
             let n = glyphs.len();
             messages.push(format!(
                 "Uniscribe item {it}: script {script_code} tag {tag_script:#010x} chars {start}..{end} -> {n} glyphs{}",
@@ -1480,15 +1563,28 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
                     "effective": true,
                 }));
             } else {
-                // Genuine wineusp per-lookup trace: each captured run is in
+                // Genuine per-application trace: wineusp per-lookup (named) or
+                // TextShaping native apply runs. Each captured run is in
                 // logical order; mirror the final run's transform (reverse
                 // RTL, then add the run start to every cluster).
+                let stage_prefix = if run.native {
+                    "textshaping"
+                } else {
+                    "wineusp lookup"
+                };
                 let nfinal = logical_final.len();
                 let seg_len = seg.len().max(1);
-                messages.push(format!(
-                    "wineusp per-lookup trace: {} stages (cmap + GSUB lookups + final)",
-                    raw_trace.len()
-                ));
+                messages.push(if run.native {
+                    format!(
+                        "textshaping native trace: {} stages (per OT application)",
+                        raw_trace.len()
+                    )
+                } else {
+                    format!(
+                        "wineusp per-lookup trace: {} stages (cmap + GSUB lookups + final)",
+                        raw_trace.len()
+                    )
+                });
                 for (st_name, gids) in &raw_trace {
                     let m = gids.len();
                     let mut objs: Vec<Value> = if m == nfinal {
@@ -1543,7 +1639,7 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
                         }
                     }
                     stages.push(json!({
-                        "m": format!("wineusp lookup {st_name} (item {it})"),
+                        "m": format!("{stage_prefix} {st_name} (item {it})"),
                         "glyphs": objs,
                         "depth": 0,
                         "effective": true,

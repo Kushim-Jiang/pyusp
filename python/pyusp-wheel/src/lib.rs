@@ -17,7 +17,8 @@ use std::path::PathBuf;
 #[pyfunction]
 #[pyo3(
     signature = (data, text, *, script = "", language = "", direction = "auto",
-                features = None, usp10 = None, trace = false, wine_bytes = false)
+                features = None, usp10 = None, trace = false, wine_bytes = false,
+                textshaping = false)
 )]
 fn shape_json(
     py: Python<'_>,
@@ -30,6 +31,7 @@ fn shape_json(
     usp10: Option<String>,
     trace: bool,
     wine_bytes: bool,
+    textshaping: bool,
 ) -> PyResult<String> {
     let tmp = temp_font_path();
     std::fs::write(&tmp, data).map_err(|e| PyRuntimeError::new_err(format!("write font: {e}")))?;
@@ -45,6 +47,7 @@ fn shape_json(
         features_arg: features.unwrap_or_default(),
         trace,
         wine_bytes,
+        textshaping,
     };
 
     let result = py.allow_threads(|| {

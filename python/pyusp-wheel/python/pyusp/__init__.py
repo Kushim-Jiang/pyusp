@@ -19,10 +19,19 @@ Two engines are available (``backend``):
   recorded inside the shaper (see ``NOTICE-wineusp.md``). On non-Windows the
   engine shapes in "bytes mode" (raw font bytes + NULL hdc) — identical
   results to Windows (cross-platform parity is CI-tested).
+* ``"textshaping"`` — **Windows-only**: drive the *system* Microsoft Uniscribe
+  (``usp10.dll`` → ``TextShaping.dll``) with a real GDI font and capture a
+  **native per-application trace** straight from the Microsoft engine: every
+  time it applies an OT operation over the glyph run the run state is
+  recorded (``trace=True``; stages are named ``textshaping apply N``). This
+  has no lookup *names* (the engine does not expose them) — it is the genuine
+  engine's per-op glyph-state timeline, and is only enabled on validated
+  ``TextShaping.dll`` builds (Win11 24H2 / 10.0.26100 x64); anything else
+  raises a clear error (see ``NOTICE-native-trace.md``).
 * ``"auto"`` — ``wineusp`` when bundled, else system ``usp10``.
 
-Cross-platform: ``wineusp`` runs on Windows, Linux and macOS. ``usp10`` is
-Windows-only (it drives Microsoft Uniscribe / usp10.dll).
+Cross-platform: ``wineusp`` runs on Windows, Linux and macOS. ``usp10`` and
+``textshaping`` are Windows-only (they drive Microsoft Uniscribe).
 """
 
 from __future__ import annotations
@@ -117,10 +126,15 @@ def shape_with_uniscribe(
     """Shape ``text`` with a Uniscribe engine and return the babelsoft
     ``/api/opentype/shape`` dict.
 
-    ``backend`` selects the engine (``"usp10"`` / ``"wineusp"`` / ``"auto"``,
-    see module docstring). ``trace=True`` requests the genuine per-lookup
-    timeline — only meaningful for ``backend="wineusp"`` (system usp10 has no
-    trace hook; it silently returns the single-stage form).
+    ``backend`` selects the engine (``"usp10"`` / ``"wineusp"`` /
+    ``"textshaping"`` / ``"auto"``, see module docstring). ``trace=True``
+    requests a real trace timeline:
+
+    * ``backend="wineusp"`` → genuine per-lookup stages (cross-platform),
+    * ``backend="textshaping"`` (Windows) → genuine native per-application
+      stages from the system Microsoft TextShaping engine (errors if the local
+      ``TextShaping.dll`` is outside the validated set),
+    * ``backend="usp10"`` → no trace hook; a single whole-run stage.
 
     ``features`` uses the same ``{tag: bool}`` convention as the HarfBuzz /
     harfrust engines. Note Uniscribe only recognises legacy OpenType script
@@ -130,7 +144,17 @@ def shape_with_uniscribe(
     """
     if not isinstance(data, (bytes, bytearray)):
         raise TypeError("data must be font file bytes")
-    dll, trace_on = _resolve_backend(backend, trace)
+    if backend == "textshaping":
+        if os.name != "nt":
+            raise ValueError(
+                "backend='textshaping' is Windows-only (it drives the system "
+                "TextShaping engine via usp10); use backend='wineusp' for the "
+                "cross-platform per-lookup trace."
+            )
+        dll, trace_on, textshaping = None, trace, bool(trace)
+    else:
+        dll, trace_on = _resolve_backend(backend, trace)
+        textshaping = False
     fs = _features_to_str(features)
     out = _pyusp.shape_json(
         bytes(data),
@@ -141,6 +165,7 @@ def shape_with_uniscribe(
         features=fs,
         usp10=dll,
         trace=trace_on,
+        textshaping=textshaping,
     )
     return json.loads(out)
 

@@ -76,6 +76,7 @@ fn main() -> ExitCode {
         features_arg: arg_val(&args, "--features").unwrap_or_default(),
         trace: args.iter().any(|a| a == "--trace"),
         wine_bytes: args.iter().any(|a| a == "--wine-bytes"),
+        textshaping: args.iter().any(|a| a == "--textshaping"),
     };
     match pyusp::shape_json(opts) {
         Ok(json) => {

@@ -19,6 +19,19 @@ dev/test-only build (`python/build_wheel.ps1`) may additionally pin an
 app-local copy of `usp10.dll`; see `python/pyusp/NOTICE.md` and
 `python/pyusp/NOTICE-wineusp.md`.
 
+**Native Microsoft trace (Windows).** With `backend="textshaping", trace=True`
+(on Windows x64) the engine hooks the system `TextShaping.dll` apply driver
+and returns a **native per-application glyph-run timeline** straight from the
+Microsoft engine (`stages` named `textshaping apply N`). This trace has no
+lookup *names* (the engine does not expose them) and is only enabled on
+validated `TextShaping.dll` builds (Win11 24H2 / 10.0.26100 x64) — anything
+else raises a clear error. See `python/pyusp/NOTICE-native-trace.md`.
+
+```python
+from pyusp import shape_with_uniscribe
+res = shape_with_uniscribe(font_bytes, text, backend="textshaping", trace=True)  # Windows
+```
+
 **Scope note**: usp10 only recognises legacy OpenType script tags. Fonts that
 use only modern tags (e.g. Devanagari faces exposing `dev2`, not `deva`) are
 not shaped by Uniscribe at all — this matches what old Win32 apps that rely on

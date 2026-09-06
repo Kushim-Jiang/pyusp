@@ -6,10 +6,21 @@ records the glyph-run state at every application (per-glyph base resolution,
 then whole-run passes) — a real glyph-state trace straight from the Microsoft
 engine, no frida needed.
 
-**Activation (diagnostic).** Set the environment variable `PYUSP_NATIVE_RUN=1`
-and shape with the **system usp10** backend (system `usp10.dll` drives
-`TextShaping.dll`). Per-application glyph runs are printed to stderr, and the
-final captured run is cross-checked against the shaped output.
+**Activation.** Two ways:
+
+1. **Public backend (recommended).** ``backend="textshaping", trace=True`` in
+   ``pyusp.shape_with_uniscribe(...)`` — Windows x64 only. The engine drives
+   the system ``usp10.dll`` (which internally calls ``TextShaping.dll``) with
+   a real GDI font, hooks the apply driver, and returns the per-application
+   glyph-run timeline as structured ``stages`` (named ``textshaping apply N``)
+   in the result dict, alongside ``messages``/``final``.
+2. **Diagnostic env (RE).** Set ``PYUSP_NATIVE_RUN=1`` and shape with the
+   **system usp10** backend; per-application glyph runs are printed to stderr
+   and the final captured run is cross-checked against the shaped output.
+
+When the local ``TextShaping.dll`` is **outside the validated set** the public
+backend **raises** a clear error instead of silently returning no trace (the
+RE env form just prints and falls back).
 
 **How support is decided at runtime.** The engine scans the *loaded*
 `TextShaping.dll` image for the driver's **full prologue signature** —
@@ -45,7 +56,9 @@ verified there.
 - **x64 only.** The hook targets the x64 engine; x86 / ARM64 builds of
   `TextShaping.dll` are not traced by this engine.
 - This is a best-effort in-process hook on a Windows OS component, version
-  gated and diagnostics-only, and only on the matching builds above.
+  gated. The public `backend="textshaping"` contract fails loudly (clear
+  error) when the local build is unsupported; the RE env form is
+  diagnostics-only and falls back silently.
 - The authoritative **per-lookup (named)** trace is provided by the bundled
   `wineusp.dll` backend (`backend="wineusp"`, `trace=True`) — see
   `NOTICE-wineusp.md`.
