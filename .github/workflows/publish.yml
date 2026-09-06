@@ -1,0 +1,52 @@
+# Build the Windows pyusp wheel and publish it to PyPI using trusted
+# publishing (OpenID Connect). No API token is stored anywhere.
+#
+# Prereqs:
+#   1. This file is on the repo's default branch.
+#   2. PyPI: add a "pending publisher" for project `pyusp`
+#      (Owner=Kushim-Jiang, Repository=pyusp, Workflow=publish.yml,
+#       Environment=release).
+#   3. GitHub repo Settings -> Environments -> `release` (optional but
+#      recommended: restrict who may run this deploy).
+#   4. Trigger by pushing a tag `v*` (or manual "Run workflow").
+#
+# The wheel is built on Windows WITHOUT bundling the Microsoft usp10.dll
+# (git-ignored, so absent in CI); it ships wineusp.dll (LGPL, committed) and
+# falls back to the system usp10.dll at runtime.
+
+name: publish
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write # OIDC for PyPI trusted publishing
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install maturin
+        run: python -m pip install maturin twine
+
+      - name: Build wheel (publish shape - no MS usp10.dll)
+        working-directory: python/pyusp-wheel
+        run: python -m maturin build --release -o dist
+
+      - name: Twine check
+        working-directory: python/pyusp-wheel
+        run: python -m twine check dist/*.whl
+
+      - name: Publish to PyPI (trusted publishing / OIDC)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: python/pyusp-wheel/dist
