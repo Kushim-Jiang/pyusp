@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-13]
+        os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v5
 
@@ -101,7 +101,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-13]
+        os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
@@ -132,3 +132,44 @@ jobs:
 
       - name: Python parity check (installed wheel)
         run: python tools/wine_usp/check_wheel_parity.py
+
+  # Debug job: reproduce the Linux glibc heap corruption ("corrupted size vs.
+  # prev_size" after a correct PARITY_MATCH) under AddressSanitizer. The
+  # libwineusp .so is compiled with -fsanitize=address and preloaded so any
+  # invalid write/read inside the port is reported with a C stack trace.
+  debug-asan:
+    name: debug (ubuntu, ASan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Build libwineusp with AddressSanitizer
+        env:
+          EXTRA_CFLAGS: "-fsanitize=address -g -O1"
+          EXTRA_LDFLAGS: "-fsanitize=address"
+          OUT_NAME: "libwineusp_asan"
+        run: sh tools/wine_usp/port/build_posix.sh
+
+      - name: Bundle the ASan lib as libwineusp.so
+        run: cp tools/wine_usp/port/libwineusp_asan.so python/pyusp-wheel/python/pyusp/libwineusp.so
+
+      - name: Install maturin
+        run: python -m pip install maturin
+
+      - name: Build wheel
+        working-directory: python/pyusp-wheel
+        run: python -m maturin build --release -o dist
+
+      - name: Install wheel
+        run: python -m pip install --force-reinstall --no-deps python/pyusp-wheel/dist/*.whl
+
+      - name: Run parity under ASan
+        env:
+          ASAN_OPTIONS: "detect_leaks=0:abort_on_error=1:handle_segv=1"
+        run: |
+          LIBA="$(cc -print-file-name=libasan.so)"
+          LD_PRELOAD="$LIBA" python tools/wine_usp/check_wheel_parity.py

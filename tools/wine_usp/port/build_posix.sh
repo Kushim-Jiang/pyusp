@@ -17,6 +17,12 @@ set -e
 cd "$(dirname "$0")"
 
 CC="${CC:-cc}"
+# Optional env overrides (e.g. sanitizer builds in CI):
+#   EXTRA_CFLAGS / EXTRA_LDFLAGS  extra compiler/link flags
+#   OUT_NAME                      output base name (default libwineusp)
+EXTRA_CFLAGS="${EXTRA_CFLAGS:-}"
+EXTRA_LDFLAGS="${EXTRA_LDFLAGS:-}"
+OUT_NAME="${OUT_NAME:-libwineusp}"
 SRCS="
   src/bidi.c
   src/bracket.c
@@ -34,7 +40,7 @@ SRCS="
   src/usp10.c
   posix/posix_compat.c
 "
-CFLAGS="-O2 -std=gnu11 -fPIC -fshort-wchar -I posix -I include -I src"
+CFLAGS="-O2 -std=gnu11 -fPIC -fshort-wchar -I posix -I include -I src $EXTRA_CFLAGS"
 mkdir -p build
 
 objs=""
@@ -46,11 +52,11 @@ done
 
 case "$(uname -s)" in
     Darwin)
-        $CC -dynamiclib -o libwineusp.dylib $objs
-        echo "built libwineusp.dylib"
+        $CC -dynamiclib -o "$OUT_NAME.dylib" $objs $EXTRA_LDFLAGS
+        echo "built $OUT_NAME.dylib"
         ;;
     *)
-        $CC -shared -Wl,-z,defs -o libwineusp.so $objs -lm
-        echo "built libwineusp.so"
+        $CC -shared -Wl,-z,defs -o "$OUT_NAME.so" $objs -lm $EXTRA_LDFLAGS
+        echo "built $OUT_NAME.so"
         ;;
 esac
