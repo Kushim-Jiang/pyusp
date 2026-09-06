@@ -1,0 +1,85 @@
+# parity.yml — cross-platform Wine Uniscribe parity (M1/M3).
+#
+# Proves that the port's bytes-mode shaping (usp_set_font_bytes + NULL hdc)
+# is identical on every OS:
+#   - Linux  : libwineusp.so  built natively (build_posix.sh) — test_posix runs
+#   - macOS  : libwineusp.dylib built natively                    — test_posix runs
+#   - Windows: mingw build of the same port sources               — test_posix runs
+# Each job shapes tools/wine_usp/testdata/NotoSansMongolian-Regular.ttf with
+# Mongolian "saikhan" and compares stage-for-stage against the committed
+# Windows reference golden (noto-saikhan-windows-golden.json).
+#
+# The .so build job additionally validates build_posix.sh output exists.
+
+name: parity
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "tools/wine_usp/**"
+      - ".github/workflows/parity.yml"
+
+jobs:
+  posix:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build libwineusp (native)
+        run: sh tools/wine_usp/port/build_posix.sh
+
+      - name: Compile + run parity driver
+        working-directory: tools/wine_usp/port
+        run: |
+          set -e
+          CC="${CC:-cc}"
+          # build test_posix from the port sources (no .so needed for the test)
+          $CC -O2 -std=gnu11 -fPIC -fshort-wchar -I posix -I include -I src \
+              test_posix.c \
+              src/bidi.c src/bracket.c src/breaking.c src/direction.c \
+              src/fontbytes.c src/indic.c src/indicsyllable.c src/linebreak.c \
+              src/mirror.c src/opentype.c src/shape.c src/shaping.c src/trace.c \
+              src/usp10.c posix/posix_compat.c \
+              -lm -o build/test_posix
+          ./build/test_posix ../../testdata/NotoSansMongolian-Regular.ttf > build/trace.txt
+          python3 ../../compare_trace.py build/trace.txt ../../testdata/noto-saikhan-windows-golden.json
+
+  windows:
+    name: windows (mingw)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSYS2 (mingw-w64 gcc)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc
+
+      - name: Compile + run parity driver (mingw) + compare
+        shell: msys2 {0}
+        working-directory: tools/wine_usp/port
+        run: |
+          set -e
+          mkdir -p build
+          # real MinGW Windows headers (no posix shims); link gdi/user/kernel
+          gcc -O2 -std=gnu11 -I include -I src \
+              test_posix.c \
+              src/bidi.c src/bracket.c src/breaking.c src/direction.c \
+              src/fontbytes.c src/indic.c src/indicsyllable.c src/linebreak.c \
+              src/mirror.c src/opentype.c src/shape.c src/shaping.c src/trace.c \
+              src/usp10.c \
+              -lgdi32 -luser32 -lkernel32 \
+              -o build/test_posix.exe
+          FONT="$(cygpath -w "$(pwd)/../../testdata/NotoSansMongolian-Regular.ttf")"
+          ./build/test_posix.exe "$FONT" > build/trace.txt
+          python ../../compare_trace.py build/trace.txt ../../testdata/noto-saikhan-windows-golden.json
