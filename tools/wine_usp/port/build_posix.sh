@@ -50,7 +50,7 @@ case "$(uname -s)" in
         echo "built libwineusp.dylib"
         ;;
     *)
-        $CC -shared -Wl,-z,defs -o libwineusp.so $objs
+        $CC -shared -Wl,-z,defs -o libwineusp.so $objs -lm
         echo "built libwineusp.so"
         ;;
 esac
