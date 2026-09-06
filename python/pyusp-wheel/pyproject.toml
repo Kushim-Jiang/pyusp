@@ -36,16 +36,18 @@ python-source = "python"
 bindings = "pyo3"
 features = ["pyo3/extension-module"]
 # What gets bundled into the wheel at pyusp/:
-#   wineusp.dll  - Wine's open-source Uniscribe port (LGPL), built from
-#                  tools/wine_usp/port; the redistributable per-lookup engine.
-#   usp10.dll    - Microsoft's OS component, NOT redistributable. Copied from
-#                  System32 only for local dev/test (git-ignored, build_wheel.ps1).
-#                  The glob below lets a PUBLISH build omit it (delete the file):
-#                  the wheel then ships only wineusp.dll and the engine falls
-#                  back to the system usp10.dll at runtime.
-#   NOTICE*.md   - component notices (see python/pyusp/NOTICE*.md).
+#   wineusp.dll    - Wine's open-source Uniscribe port (LGPL), built from
+#                    tools/wine_usp/port; the redistributable per-lookup engine.
+#   NOTICE*.md     - component notices (see python/pyusp/NOTICE*.md).
+# The Microsoft usp10.dll is NOT redistributable and must not ship in a wheel.
+# maturin auto-includes every file present in python/pyusp/, so to build a
+# publish wheel you must build with python/pyusp/usp10.dll absent (it is
+# git-ignored and copied from System32 only by the dev-only build_wheel.ps1,
+# which intentionally produces a local dev/test wheel). At runtime the engine
+# falls back to the system usp10.dll when none is bundled.
 include = [
-    "pyusp/*.dll",
+    "pyusp/wineusp.dll",
     "pyusp/NOTICE.md",
     "pyusp/NOTICE-wineusp.md",
+    "pyusp/NOTICE-native-trace.md",
 ]
