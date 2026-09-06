@@ -241,3 +241,52 @@ buffer"的代码；或先扩大 RIP 采样到**16B 内逐条**(改桶粒度/加�
 - `thread_creator.py`：hook CreateThread 抓 worker 入口 RVA。
 - 输出样例：counts_saihan.json / inline_saihan.json / thread_saihan.json。
 
+
+
+## 检查点9（2026-09-06 frida 会话）：★突破——原生逐-glyph glyph状态缓冲定位成功
+（推翻检查点前"原生可交付上限=逐字形事件(非状态)"的判否。见 repo memory 行289-295 需改。）
+
+### 前置：frida 确定性 attach（解决 0-fire 竞态）
+- TextShaping shape 时才懒加载 → 竞态。lib.rs 加 PYUSP_PRELOAD_TS(LoadLibraryW) +
+  **PYUSP_POSTLOAD_MS**(preload 后、shape 前睡眠 N ms) → frida 2ms 轮询必然 attach。
+- 全部 frida 脚本 spawn env 用 PRESLEEP=1500/PRELOAD=1/POSTLOAD=3000；结尾 dev.kill(pid)
+  否则 spawn 子进程占管道让 async 终端永不返回。
+
+### 可靠反汇编（frida capstone，绕过 objdump 失步）
+- 0x25350 = OT 表缓存 getter（edx=tag：GSUB/GDEF/GPOS/mort/morx），只读写缓存对象
+  (rcx) 偏移，**不携带/不修改 glyph 码** → 之前"它附近找 final"全落空的原因。
+- 0xc1c0(parser) 真实 returnAddress（frida this.returnAddress，非 Rust [rsp+0x50] 猜读）：
+  主调用者 **0x15712 x19**（0x15650 函数内 0x1570d 的 `call 0xc1c0` 之后）+ 0xaddd/0x2bd85/
+  0x2bdde 少量。cache(0x25350) 调用者 = 0xf8cd / 0x1223b / 0xc4c0。
+
+### ★找到驱动 0x15650 + glyph run 缓冲
+- 0x15650 = "对 run 应用一次 GSUB 操作" 的驱动（entry@0x15650：push rbp..lea rbp,[rsp-0x218]
+  sub rsp,0x318；内部 0x1570d 调 parser）。蒙古文 6 字形 **0x15650 恰好触发 26 次**（与
+  0x15712 x26 同源）。26 次调用**寄存器全同**(ecx=edx=0, 指针簇相邻) → 参数相同，26=
+  内部多趟/多 lookup 应用，非逐-glyph 区分。
+- **glyph run 缓冲 = r9 指向的栈槽 → 解引用一次 = 堆上 u16 数组**（每 glyph 4 u16 记录：
+  {u16 gid, u16 标志(末趟=16), u16 逻辑序 0..5, u16 1}；相邻还有逻辑序数组 [0,1,2,3,4,5]
+  与 advance 数据）。读 r8/rsi/r9 的 readPointer() 后 u16 可见。
+- **逐 fire 快照（onEnter 与 onLeave 都试）**——蒙古 6 字形 ᠰᠠᠢᠬᠠᠨ：
+  - fires 1-24（每 glyph ~4 fire，r9-> 缓冲只显当前 glyph）：
+    glyph0→673 | glyph1→277 | glyph2→295 | glyph3→461 | glyph4→277 | glyph5→350
+  - fire 25（换到整 run 缓冲）：run=[673,277,295,461,277,350] 逻辑序[0..5]
+  - fire 26 **onEnter**：run=[675,281,302,464,281,351]（还没到最终）
+  - fire 26 **onLeave**（函数返回瞬间）：run=**[675,281,303,471,281,351] == pyusp 最终，精确一致！**
+- → **原生 TextShaping 侧逐应用/逐 glyph 的 glyph 状态 trace 成立**：hook 0x15650，
+  每 fire 读 r9-> 缓冲即可。0x15650 26 次中 glyph 状态按序演变到最后精确 final。
+
+### 意义与剩余
+- 修正旧判否：原生并非只能给"逐字形事件"，现在能快照**真实 glyph 状态**（含中间 gid）。
+- 语义映射未做：26 fire 内部哪几次=哪个 feature/lookup（isol/init/medi/fina/rclt）仍未知；
+  观察到的中间态 673/277/295/461/277/350→675/281/302/464/281/351→675/281/303/471/281/351
+  对应 HB 的 init/medi/fina/rclt 的大致轨迹（与 wineusp/HB 的 673→675、277→281、
+  295→302、350→351 等一致），但 native 无 lookup 名。
+- 工具（保留，其余探索性 one-shot 已删）：tools/frida_ts_{disasm,callers,drivers2,
+  15650,locals,run,oleave}.py + lib.rs PYUSP_PRELOAD_TS/PYUSP_POSTLOAD_MS（本批提交）。
+
+### frida/PS 坑（本轮新增）
+- Interceptor.attach 想测"是否触发"必须**每次 fire 都 send**（只在有 hit 时发无法区分
+  "没触发"vs"触发但无 hit"——drivers.py 就因此误判 0 命中）。
+- spawn 子进程存活会占管道 → async 终端永不 idle；python 结尾 dev.kill(pid)。
+- 读"调用者返回地址"用 frida this.returnAddress（Rust arm_rvas_ret 读 [rsp+0x50] 是猜的）。
