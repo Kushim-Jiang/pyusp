@@ -15,9 +15,15 @@
 
 /* Wine calls these as NtGdiGetFontData(hdc, tag, 0, buf, len) etc.  Native
  * gdi32 exports GetFontData / GetGlyphIndicesW / GetTextCharsetInfo with the
- * same signatures/semantics. */
-#define NtGdiGetFontData GetFontData
-#define NtGdiGetGlyphIndicesW GetGlyphIndicesW
-#define NtGdiGetTextCharsetInfo GetTextCharsetInfo
+ * same signatures/semantics.
+ *
+ * When the engine registers raw font bytes (usp_set_font_bytes), these
+ * dispatch to the byte-backed provider in fontbytes.c so the same shaping can
+ * run without a GDI device context (cross-platform). With no bytes registered
+ * they fall back to the real gdi32 functions (Windows GDI path, unchanged). */
+#include "fontbytes.h"
+#define NtGdiGetFontData usp_fb_GetFontData
+#define NtGdiGetGlyphIndicesW usp_fb_GetGlyphIndicesW
+#define NtGdiGetTextCharsetInfo usp_fb_GetTextCharsetInfo
 
 #endif /* PORT_NTGDI_H */
