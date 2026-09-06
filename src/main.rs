@@ -24,7 +24,9 @@ fn main() -> ExitCode {
             "pyusp — Uniscribe (usp10) OpenType shaping tracer\n\
              usage: pyusp --font <path> --text <str> [--script <iso>]\n\
                     [--language <bcp47>] [--direction auto|ltr|rtl]\n\
-                    [--features +tag,-tag,tag=N,...] [--usp10 <dll>] [--out <file>]"
+                    [--features +tag,-tag,tag=N,...] [--usp10 <dll>] [--out <file>]\n\
+             --wine-bytes : drive wineusp via raw font bytes (NULL hdc),\n\
+                             the cross-platform path (no GDI font required)"
         );
         return ExitCode::SUCCESS;
     }
@@ -72,6 +74,7 @@ fn main() -> ExitCode {
         usp10_path: arg_val(&args, "--usp10"),
         features_arg: arg_val(&args, "--features").unwrap_or_default(),
         trace: args.iter().any(|a| a == "--trace"),
+        wine_bytes: args.iter().any(|a| a == "--wine-bytes"),
     };
     match pyusp::shape_json(opts) {
         Ok(json) => {

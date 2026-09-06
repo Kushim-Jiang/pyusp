@@ -129,6 +129,10 @@ type FnTraceBegin = unsafe extern "system" fn() -> i32;
 type FnTraceCount = unsafe extern "system" fn() -> i32;
 type FnTraceStage = unsafe extern "system" fn(i32, *mut u8, i32, *mut i32, *mut *const u16) -> i32;
 type FnTraceStop = unsafe extern "system" fn();
+// Cross-platform font-bytes provider (wineusp.dll port only): register raw
+// font bytes so Script*OpenType can shape with a NULL hdc (no GDI font / DC).
+type FnSetFontBytes = unsafe extern "system" fn(*const c_void, usize) -> i32;
+type FnClearFontBytes = unsafe extern "system" fn();
 
 /// Dynamically-loaded handle to usp10.dll.
 pub struct Usp10 {
@@ -143,6 +147,9 @@ pub struct Usp10 {
     pub trace_count: Option<FnTraceCount>,
     pub trace_stage: Option<FnTraceStage>,
     pub trace_stop: Option<FnTraceStop>,
+    /// Optional wineusp.dll raw font-bytes provider (None for system usp10).
+    pub set_font_bytes: Option<FnSetFontBytes>,
+    pub clear_font_bytes: Option<FnClearFontBytes>,
 }
 
 fn hres_msg(hr: HRES) -> &'static str {
@@ -198,6 +205,10 @@ impl Usp10 {
                 .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceStage>(p)),
             trace_stop: GetProcAddress(module, PCSTR(b"usp_trace_stop\0".as_ptr()))
                 .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceStop>(p)),
+            set_font_bytes: GetProcAddress(module, PCSTR(b"usp_set_font_bytes\0".as_ptr()))
+                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnSetFontBytes>(p)),
+            clear_font_bytes: GetProcAddress(module, PCSTR(b"usp_clear_font_bytes\0".as_ptr()))
+                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnClearFontBytes>(p)),
         })
     }
 }
@@ -382,6 +393,11 @@ pub struct ShapeOpts {
     /// Enable the wineusp per-lookup trace (no-op when the loaded DLL has no
     /// usp_trace_* exports, e.g. system usp10.dll).
     pub trace: bool,
+    /// Shape via the wineusp raw font-bytes provider: register the font file
+    /// bytes and drive Script*OpenType with a NULL hdc (no GDI font/DC). This
+    /// is the same code path Linux/macOS use — fully parity-checked on
+    /// Windows against the GDI reference (tools/wine_usp/port/test_bytesmode).
+    pub wine_bytes: bool,
 }
 
 fn feature_tag(tag: &str) -> u32 {
@@ -482,6 +498,10 @@ unsafe fn make_font_dc(path: &str, data: &[u8]) -> Result<FontDc, String> {
 
 impl FontDc {
     unsafe fn cleanup(&mut self, path: &str) {
+        if self.hdc.0.is_null() {
+            // bytes mode: no GDI font/DC was created — nothing to release.
+            return;
+        }
         let _ = SelectObject(self.hdc, self.prev);
         let _ = DeleteObject(self.hfont);
         let _ = DeleteDC(self.hdc);
@@ -1165,7 +1185,31 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
         }
     };
 
-    let mut fd = unsafe { make_font_dc(&opts.font, &data) }?;
+    // Wine-bytes mode: when the loaded module (wineusp) exposes the raw
+    // font-bytes provider, register the font and drive shaping with a NULL
+    // hdc — the same path Linux/macOS use (no GDI font/DC needed).
+    let wine_bytes = opts.wine_bytes && usp.set_font_bytes.is_some();
+    let mut fd = if wine_bytes {
+        let rc = unsafe { (usp.set_font_bytes.unwrap())(data.as_ptr() as *const c_void, data.len()) };
+        if rc != 0 {
+            return Err(format!("usp_set_font_bytes failed (rc={rc})"));
+        }
+        let family = sfnt_family(&data)
+            .unwrap_or_else(|| {
+                std::path::Path::new(&opts.font)
+                    .file_stem()
+                    .map(|s| s.to_string_lossy().into_owned())
+                    .unwrap_or_else(|| "pyusp".into())
+            });
+        FontDc {
+            hdc: HDC(ptr::null_mut()),
+            hfont: HFONT(ptr::null_mut()),
+            prev: HGDIOBJ(ptr::null_mut()),
+            family,
+        }
+    } else {
+        unsafe { make_font_dc(&opts.font, &data) }?
+    };
     let mut psc: *mut c_void = ptr::null_mut();
     let mut run = ShapeRun {
         usp: &usp,
@@ -1384,7 +1428,13 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
 
     unsafe {
         let _ = (usp.free_cache)(&mut psc);
-        fd.cleanup(&opts.font);
+        if wine_bytes {
+            if let Some(clr) = usp.clear_font_bytes {
+                clr();
+            }
+        } else {
+            fd.cleanup(&opts.font);
+        }
     }
 
     result
