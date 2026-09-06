@@ -38,18 +38,20 @@ wchar_t *wcschr(const wchar_t *s, wchar_t c);
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
-/* Interlocked* — POSIX atomics via GCC __sync builtins */
-static __inline long InterlockedIncrement(volatile long *v){ return __sync_add_and_fetch(v, 1); }
-static __inline long InterlockedDecrement(volatile long *v){ return __sync_sub_and_fetch(v, 1); }
-static __inline long InterlockedExchange(volatile long *t, long v){ return __sync_lock_test_and_set(t, v); }
-static __inline long InterlockedExchangeAdd(volatile long *t, long v){ return __sync_fetch_and_add(t, v); }
+/* Interlocked* — POSIX atomics via GCC __sync builtins.
+ * Windows signature: LONG (32-bit) operands; on LP64 `long` would be 64-bit
+ * and mismatch callers passing volatile LONG* (int*). */
+static __inline LONG InterlockedIncrement(volatile LONG *v){ return __sync_add_and_fetch(v, 1); }
+static __inline LONG InterlockedDecrement(volatile LONG *v){ return __sync_sub_and_fetch(v, 1); }
+static __inline LONG InterlockedExchange(volatile LONG *t, LONG v){ return __sync_lock_test_and_set(t, v); }
+static __inline LONG InterlockedExchangeAdd(volatile LONG *t, LONG v){ return __sync_fetch_and_add(t, v); }
 static __inline void *InterlockedExchangePointer(void *volatile *t, void *v){ return __sync_lock_test_and_set(t, v); }
-static __inline long InterlockedCompareExchange(volatile long *d, long e, long c){ return __sync_val_compare_and_swap(d, c, e); }
+static __inline LONG InterlockedCompareExchange(volatile LONG *d, LONG e, LONG c){ return __sync_val_compare_and_swap(d, c, e); }
 static __inline void *InterlockedCompareExchangePointer(void *volatile *d, void *e, void *c){ return __sync_val_compare_and_swap(d, c, e); }
 
 /* CRITICAL_SECTION — non-recursive spinlock (adequate for the port's cache lock) */
 typedef struct _RTL_CRITICAL_SECTION {
-    volatile long lock;
+    volatile LONG lock;
 } RTL_CRITICAL_SECTION;
 typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 static __inline void InitializeCriticalSection(CRITICAL_SECTION *cs){ cs->lock = 0; }

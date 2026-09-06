@@ -90,13 +90,18 @@
 #define VOID void
 
 /* ---- base scalars ---- */
+/* IMPORTANT: Windows types are LLP64 — LONG/ULONG are ALWAYS 32-bit even on
+ * 64-bit Windows. On Linux/macOS (LP64) the C `long` is 64-bit, so typedefing
+ * LONG to `long` would silently double every struct that uses it (GOFFSET,
+ * ABC, HRESULT, RECT, TEXTMETRICW, ...) and desync the C ABI from the Rust
+ * ffi.rs mirrors (which use i32/u32). Hence LONG=int, ULONG=unsigned int. */
 typedef char            CHAR;
 typedef short           SHORT;
-typedef long            LONG;
+typedef int             LONG;
 typedef int             INT;
 typedef unsigned char   UCHAR;
 typedef unsigned short  USHORT;
-typedef unsigned long   ULONG;
+typedef unsigned int    ULONG;
 typedef unsigned int    UINT;
 typedef float           FLOAT;
 typedef double          DOUBLE;
