@@ -1,0 +1,208 @@
+/* port/posix/winnls.h — POSIX shim: NLS (charset/locale) surface used by the port. */
+#ifndef PORT_POSIX_WINNLS_H
+#define PORT_POSIX_WINNLS_H
+
+#include "windef.h"
+
+typedef DWORD LCID;
+typedef WORD  LANGID;
+typedef DWORD LCTYPE;
+
+#define CP_ACP 0
+#define CP_OEMCP 1
+#define CP_MACCP 2
+#define CP_THREAD_ACP 3
+#define CP_SYMBOL 42
+#define CP_UTF7 65000
+#define CP_UTF8 65001
+
+#define LOCALE_ILANGUAGE 0x1
+#define LOCALE_SLANGUAGE 0x2
+#define LOCALE_SENGLANGUAGE 0x1001
+#define LOCALE_SABBREVLANGNAME 0x3
+#define LOCALE_SNATIVELANGNAME 0x4
+#define LOCALE_ICOUNTRY 0x5
+#define LOCALE_SCOUNTRY 0x6
+#define LOCALE_SSORTLOCALE 0x1b
+
+#define LOCALE_SYSTEM_DEFAULT 0x0800
+#define LOCALE_USER_DEFAULT 0x0400
+#define LOCALE_INVARIANT 0x007f
+
+#define LOCALE_RETURN_NUMBER 0x20000000
+#define LOCALE_NOUSEROVERRIDE 0x80000000
+#define LOCALE_IDIGITSUBSTITUTION 0x1042
+#define LOCALE_ICONSTRUCTEDLOCALE 0x0001
+
+#define LCID_INSTALLED 0x00000001
+#define LCID_SUPPORTED 0x00000002
+
+#define LCMAP_LOWERCASE 0x0100
+#define LCMAP_UPPERCASE 0x0200
+#define LCMAP_SORTKEY 0x0400
+
+#define LANG_NEUTRAL 0x00
+#define LANG_ARABIC 0x01
+#define LANG_BULGARIAN 0x02
+#define LANG_CATALAN 0x03
+#define LANG_CHINESE 0x04
+#define LANG_CZECH 0x05
+#define LANG_DANISH 0x06
+#define LANG_GERMAN 0x07
+#define LANG_GREEK 0x08
+#define LANG_ENGLISH 0x09
+#define LANG_SPANISH 0x0a
+#define LANG_FINNISH 0x0b
+#define LANG_FRENCH 0x0c
+#define LANG_HEBREW 0x0d
+#define LANG_HUNGARIAN 0x0e
+#define LANG_ICELANDIC 0x0f
+#define LANG_ITALIAN 0x10
+#define LANG_JAPANESE 0x11
+#define LANG_KOREAN 0x12
+#define LANG_DUTCH 0x13
+#define LANG_NORWEGIAN 0x14
+#define LANG_POLISH 0x15
+#define LANG_PORTUGUESE 0x16
+#define LANG_ROMANIAN 0x18
+#define LANG_RUSSIAN 0x19
+#define LANG_CROATIAN 0x1a
+#define LANG_SLOVAK 0x1b
+#define LANG_ALBANIAN 0x1c
+#define LANG_SWEDISH 0x1d
+#define LANG_THAI 0x1e
+#define LANG_TURKISH 0x1f
+#define LANG_URDU 0x20
+#define LANG_INDONESIAN 0x21
+#define LANG_UKRAINIAN 0x22
+#define LANG_BELARUSIAN 0x23
+#define LANG_SLOVENIAN 0x24
+#define LANG_ARMENIAN 0x2b
+#define LANG_AZERI 0x2c
+#define LANG_BASQUE 0x2d
+#define LANG_MACEDONIAN 0x2f
+#define LANG_GEORGIAN 0x37
+#define LANG_FAEROESE 0x38
+#define LANG_HINDI 0x39
+#define LANG_MALAY 0x3e
+#define LANG_KAZAK 0x3f
+#define LANG_SWAHILI 0x41
+#define LANG_UZBEK 0x43
+#define LANG_MONGOLIAN 0x50
+#define LANG_PERSIAN 0x29
+#define LANG_FARSI LANG_PERSIAN
+#define LANG_VIETNAMESE 0x2a
+#define LANG_PUNJABI 0x46
+#define LANG_GUJARATI 0x47
+#define LANG_ORIYA 0x48
+#define LANG_TAMIL 0x49
+#define LANG_TELUGU 0x4a
+#define LANG_KANNADA 0x4b
+#define LANG_MALAYALAM 0x4c
+#define LANG_BENGALI 0x45
+#define LANG_ASSAMESE 0x4d
+#define LANG_MARATHI 0x4e
+#define LANG_SANSKRIT 0x4f
+#define LANG_CONGOANESE 0x52
+#define LANG_AMHARIC 0x5e
+#define LANG_ETHIOPIC LANG_AMHARIC
+#define LANG_BURMESE 0x55
+#define LANG_KHMER 0x53
+#define LANG_LAO 0x54
+#define LANG_SINHALESE 0x5b
+#define LANG_DIVEHI 0x65
+#define LANG_NEPALI 0x61
+#define LANG_TIBETAN 0x51
+#define LANG_YIDDISH 0x3d
+#define LANG_SERBIAN 0x1a
+#define LANG_BOSNIAN 0x1a
+#define LANG_AFRIKAANS 0x36
+#define LANG_MALTESE 0x3a
+#define LANG_MAORI 0x28
+#define LANG_FRISIAN 0x62
+#define LANG_WELSH 0x52
+#define LANG_IRISH 0x3c
+#define LANG_ESTONIAN 0x25
+#define LANG_LATVIAN 0x26
+#define LANG_LITHUANIAN 0x27
+#define LANG_BYELORUSSIAN 0x23
+#define LANG_SYRIAC 0x5a
+#define LANG_INVARIANT 0x7f
+
+#define SUBLANG_NEUTRAL 0x00
+#define SUBLANG_DEFAULT 0x01
+#define SUBLANG_SYS_DEFAULT 0x02
+#define SUBLANG_CUSTOM_DEFAULT 0x03
+#define SUBLANG_CUSTOM_UNSPECIFIED 0x04
+#define SUBLANG_UI_CUSTOM_DEFAULT 0x05
+
+#define MAKELANGID(p,s) ((WORD)(((WORD)(s) << 10) | (WORD)(p)))
+#define MAKELCID(lgid,srtid) ((DWORD)((((DWORD)((WORD)(srtid))) << 16) | ((DWORD)(WORD)(lgid))))
+#define LANGIDFROMLCID(lcid) ((WORD)(lcid))
+#define PRIMARYLANGID(lgid) ((WORD)(lgid) & 0x3ff)
+#define SUBLANGID(lgid) ((WORD)(lgid) >> 10)
+
+
+#define NORM_IGNORECASE 0x00000001
+#define NORM_IGNOREKANATYPE 0x00010000
+#define SORT_STRINGSORT 0x00001000
+
+/* GetStringTypeW classification constants */
+#define CT_CTYPE1 1
+#define CT_CTYPE2 2
+#define CT_CTYPE3 3
+#define C1_UPPER 0x0001
+#define C1_LOWER 0x0002
+#define C1_DIGIT 0x0004
+#define C1_SPACE 0x0008
+#define C1_PUNCT 0x0010
+#define C1_CNTRL 0x0020
+#define C1_BLANK 0x0040
+#define C1_XDIGIT 0x0080
+#define C1_ALPHA 0x0100
+#define C1_DEFINED 0x0200
+#define C2_LEFTTORIGHT 0x0001
+#define C2_RIGHTTOLEFT 0x0002
+#define C2_EUROPENUMBER 0x0003
+#define C2_EUROPESEPARATOR 0x0004
+#define C2_EUROPETERMINATOR 0x0005
+#define C2_ARABICNUMBER 0x0006
+#define C2_COMMONSEPARATOR 0x0007
+#define C2_BLOCKSEPARATOR 0x0008
+#define C2_SEGMENTSEPARATOR 0x0009
+#define C2_WHITESPACE 0x000A
+#define C2_OTHERNEUTRAL 0x000B
+#define C2_NOTAPPLICABLE 0x0000
+#define C3_NONSPACING 0x0001
+#define C3_DIACRITIC 0x0002
+#define C3_VOWELMARK 0x0004
+#define C3_SYMBOL 0x0008
+#define C3_KATAKANA 0x0010
+#define C3_HIRAGANA 0x0020
+#define C3_HALFWIDTH 0x0040
+#define C3_FULLWIDTH 0x0080
+#define C3_IDEOGRAPH 0x0100
+#define C3_KASHIDA 0x0200
+#define C3_LEXICAL 0x0400
+#define C3_HIGHSURROGATE 0x0800
+#define C3_LOWSURROGATE 0x1000
+#define C3_ALPHA 0x8000
+#define C3_NOTAPPLICABLE 0x0000
+
+UINT WINAPI GetUserDefaultLCID(void);
+int  WINAPI GetUserDefaultLangID(void);
+int  WINAPI GetSystemDefaultLangID(void);
+int  WINAPI GetUserDefaultUILanguage(void);
+int  WINAPI GetSystemDefaultUILanguage(void);
+BOOL WINAPI IsValidLocale(DWORD id, DWORD flags);
+int  WINAPI LCMapStringW(DWORD locale, DWORD flags, LPCWSTR src, int cchSrc, LPWSTR dst, int cchDest);BOOL WINAPI GetStringTypeW(DWORD type, LPCWSTR src, int cchSrc, LPWORD chartype);
+BOOL WINAPI GetStringTypeExW(LCID locale, DWORD type, LPCWSTR src, int cchSrc, LPWORD chartype);
+#endif /* PORT_POSIX_WINNLS_H */
+
+int WINAPI GetLocaleInfoW(LCID locale, LCTYPE lctype, LPWSTR data, int cch);
+int WINAPI GetLocaleInfoA(LCID locale, LCTYPE lctype, LPSTR data, int cch);
+int WINAPI GetACP(void);
+int WINAPI GetOEMCP(void);
+int WINAPI CompareStringW(LCID locale, DWORD flags, LPCWSTR a, int na, LPCWSTR b, int nb);
+LCID WINAPI ConvertDefaultLocale(LCID locale);
+

@@ -197,6 +197,8 @@ python/pyusp-wheel/python/pyusp/usp10.dll
 # engine is committed separately as python/pyusp-wheel/.../pyusp/wineusp.dll)
 tools/wine_usp/port/build/
 tools/wine_usp/port/wineusp_new.dll
+tools/wine_usp/port/libwineusp.so
+tools/wine_usp/port/libwineusp.dylib
 # third-party Wine source trees (mirrored from downloads/, kept for reference)
 tools/wine_usp/wine-src/
 tools/wine_usp/wine-master/
