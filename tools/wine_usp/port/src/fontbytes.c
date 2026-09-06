@@ -78,6 +78,11 @@ uint32_t usp_fb_GetFontData(HDC hdc, uint32_t tag, uint32_t offset, void *buf, u
     if (g_active)
     {
         uint32_t off = 0, length = 0;
+        /* Wine callers pass tags from MS_MAKE_TAG, which stores the fourcc
+         * LSB-first (little-endian DWORD), whereas the sfnt table directory
+         * stores tags big-endian. Byte-swap so the directory comparison works. */
+        tag = ((tag >> 24) & 0xff) | ((tag >> 8) & 0xff00) |
+              ((tag << 8) & 0xff0000) | ((tag << 24) & 0xff000000u);
         if (!find_table(tag, &off, &length)) return (uint32_t)-1; /* GDI_ERROR */
         if (offset >= length) return (uint32_t)-1;
         if (!buf) return length - offset;
