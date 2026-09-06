@@ -350,3 +350,22 @@ buffer"的代码；或先扩大 RIP 采样到**16B 内逐条**(改桶粒度/加�
   本机 TextShaping = 10.0.26100.9278。
 - 工具：tools/frida_ts_*.py 为外部对照；本机制使 usp10 backend 的逐应用 trace 不依赖
   frida。接进 wheel(backend=usp10 & trace=True)仍未做——下一步。
+
+
+## 检查点13（2026-09-06）：x64 TextShaping 版本表实证（downloads/ 样本）
+- 用户在 downloads/ 放了 TextShaping_x86-64*.zip（8 个，全是 Win11 24H2 26100 的不同修订）。
+  逐个跑 tools/ts_driver_find.py（签名 40 55 56 41 54 41 55 41 56 41 57 48 8D）：
+  | filever       | driver RVA | sig | full-pro |
+  | 26100.9278*   | 0x15650    | 1   | True  (本机) |
+  | 26100.8972    | 0x152c0    | 1   | True  |
+  | 26100.6725    | 0x15250    | 1   | True  |
+  | 26100.4343    | 0x15250    | 1   | True  |
+  | 26100.3624    | 0x155b0    | 1   | True  |
+  | 26100.2454    | 0x15600    | 1   | True  |
+  | 26100.2033    | 0x15600    | 1   | True  |
+  | 26100.1591    | (none)     | 0   | -     (最老修订：驱动 prologue 已变/结构不同) |
+- **结论**：RVA 随修订漂移(0x15250..0x15650)，但**运行时签名自动定位在 7/8 无需改代码即命中**
+  → 实证了检查点12 的版本无关机制；26100.1591 命中 0 → 优雅回退(无 native stages)，符合设计。
+- 局限：样本全是 26100 家族(x64)；跨 OS 家族(Win10 19045/Win11 22H2 22621/23H2 22631)仍未实证；
+  且本机只能跑 26100.9278，其余修订的 r9→run 语义无法运行时验证（靠签名+full-prologue+守卫+自检）。
+- 样本在 downloads/（gitignored）；解压目录 downloads/_x64 已清。x86/ARM64 样本与 x64 hook 无关。
