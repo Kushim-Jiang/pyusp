@@ -26,9 +26,11 @@ permissions:
   id-token: write # OIDC for PyPI trusted publishing
 
 jobs:
-  build-and-publish:
+  # The wheel is built on Windows (the pyusp engine is Windows-native today).
+  # pypa/gh-action-pypi-publish only runs on GNU/Linux, so the publish job is a
+  # separate ubuntu job that downloads the built artifact.
+  build:
     runs-on: windows-latest
-    environment: release
     steps:
       - uses: actions/checkout@v4
 
@@ -46,7 +48,24 @@ jobs:
         working-directory: python/pyusp-wheel
         run: python -m twine check dist/*.whl
 
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels
+          path: python/pyusp-wheel/dist/*.whl
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheels
+          path: dist
+
       - name: Publish to PyPI (trusted publishing / OIDC)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: python/pyusp-wheel/dist
+          packages-dir: dist
