@@ -576,7 +576,58 @@ impl<'a> ShapeRun<'a> {
         let callee_probe = std::env::var_os("PYUSP_CALLEE_PROBE").is_some();
         let glyph_probe = std::env::var_os("PYUSP_GLYPH_PROBE").is_some();
         let ret_probe = std::env::var_os("PYUSP_RET_PROBE").is_some();
-        if ret_probe {
+        let ts_probe = std::env::var_os("PYUSP_TS_PROBE").is_some();
+        let ts_ret = std::env::var_os("PYUSP_TS_RET").is_some();
+        if ts_probe {
+            // TextShaping is the real OT engine; count fires of its candidate
+            // apply-driver / parse entries to find the per-lookup frequency.
+            // TextShaping loads lazily during ScriptShapeOpenType, so force it.
+            let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
+            unsafe {
+                windows::Win32::System::LibraryLoader::LoadLibraryW(
+                    windows::core::PCWSTR(wname.as_ptr()),
+                );
+            }
+            let cname = std::ffi::CString::new("TextShaping.dll").unwrap();
+            let gbase = unsafe {
+                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
+                    cname.as_ptr() as *const u8,
+                ))
+                .map(|h| h.0 as u64)
+                .unwrap_or(0)
+            };
+            if gbase != 0 {
+                eprintln!("[ts] base={gbase:#x} arming TextShaping probes");
+                let all: [(u64, usize); 7] = [
+                    (0xad60, 5),  // apply driver (parses + loops glyphs)
+                    (0xc1c0, 5),  // GSUB/GPOS table parser
+                    (0xcc10, 5),
+                    (0xcf18, 5),
+                    (0x1500, 6),
+                    (0x25350, 5), // GSUB cache wrapper
+                    (0x25c40, 5),
+                ];
+                // PYUSP_TS_ONE=<hex rva>: hook only that rva (bisection).
+                let one = std::env::var("PYUSP_TS_ONE")
+                    .ok()
+                    .and_then(|v| u64::from_str_radix(v.trim_start_matches("0x"), 16).ok());
+                let rvas: Vec<(u64, usize)> = match one {
+                    Some(rva) => all
+                        .iter()
+                        .copied()
+                        .filter(|(r, _)| *r == rva)
+                        .collect(),
+                    None => all.to_vec(),
+                };
+                if !rvas.is_empty() {
+                    self.callee_guard = if ts_ret {
+                        Some(unsafe { worker_hook::arm_rvas_ret(gbase, &rvas) })
+                    } else {
+                        Some(unsafe { worker_hook::arm_rvas(gbase, &rvas) })
+                    };
+                }
+            }
+        } else if ret_probe {
             // Capture the return address of each per-glyph getter fire so the
             // per-glyph driver loop (unique concentrated caller) is located.
             let cname = std::ffi::CString::new("gdi32full.dll").unwrap();
@@ -755,7 +806,7 @@ impl<'a> ShapeRun<'a> {
         }
 
         // Return-address probe report: aggregate caller continuation RVAs.
-        if ret_probe {
+        if ret_probe || (ts_probe && ts_ret) {
             let rets = worker_hook::drain_rets();
             use std::ffi::CString;
             let cname = CString::new("gdi32full.dll").unwrap();
@@ -844,13 +895,13 @@ impl<'a> ShapeRun<'a> {
                 }
             }
         }
-        if callee_probe {
+        if callee_probe || ts_probe {
             let evs = worker_hook::drain();
             let mut agg: std::collections::BTreeMap<u64, u32> = std::collections::BTreeMap::new();
             for (tag, _v) in evs {
                 *agg.entry(tag as u64).or_insert(0) += 1;
             }
-            eprintln!("[callee] fires:");
+            eprintln!("[callee] fires (ts_probe={ts_probe}):");
             for (rva, c) in agg {
                 eprintln!("[callee]   {rva:#x} x{c}");
             }
@@ -959,6 +1010,24 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
     if let Ok(ms) = std::env::var("PYUSP_PRESLEEP_MS") {
         if let Ok(n) = ms.parse::<u64>() {
             std::thread::sleep(std::time::Duration::from_millis(n));
+        }
+    }
+    // Force-load the real engine DLL early so an external tracer (frida) can
+    // attach to TextShaping before the (fast) shape runs. RE only.
+    if std::env::var_os("PYUSP_PRELOAD_TS").is_some() {
+        let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
+        unsafe {
+            windows::Win32::System::LibraryLoader::LoadLibraryW(
+                windows::core::PCWSTR(wname.as_ptr()),
+            );
+        }
+        // After forcing the engine DLL into memory, hold BEFORE the shape runs
+        // so an external tracer (frida) can deterministically attach
+        // (PYUSP_POSTLOAD_MS=<millis>). RE only.
+        if let Ok(ms) = std::env::var("PYUSP_POSTLOAD_MS") {
+            if let Ok(n) = ms.parse::<u64>() {
+                std::thread::sleep(std::time::Duration::from_millis(n));
+            }
         }
     }
     let data = std::fs::read(&opts.font).map_err(|e| format!("read font {}: {e}", opts.font))?;
