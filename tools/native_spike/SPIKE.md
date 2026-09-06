@@ -290,3 +290,25 @@ buffer"的代码；或先扩大 RIP 采样到**16B 内逐条**(改桶粒度/加�
   "没触发"vs"触发但无 hit"——drivers.py 就因此误判 0 命中）。
 - spawn 子进程存活会占管道 → async 终端永不 idle；python 结尾 dev.kill(pid)。
 - 读"调用者返回地址"用 frida this.returnAddress（Rust arm_rvas_ret 读 [rsp+0x50] 是猜的）。
+
+
+## 检查点10（2026-09-06）：native trace 交付——26 次应用映射到 wineusp stage
+- **工具**：tools/frida_ts_trace.py（hook 0x15650，每应用记 onEnter/onLeave 的
+  r9-> run 状态，输出 JSON，--out）；tools/frida_ts_align.py（native↔wine 对齐+校验）。
+  应用数规律 = **2 + 4·glyphs**（6字形=26 / 2字形=10；每 glyph 4 次子应用 + 末尾 2 次整 run）。
+- **蒙古文 6 字形 ᠰᠠᠢᠬᠠᠨ native trace（26 apps，真实 glyph 状态）**：
+  - apps 1-24：逐 glyph 基形解析（glyph0=673、glyph1=277、glyph2=295、glyph3=461、
+    glyph4=277、glyph5=350，各 4 次子应用，无状态变化）→ 等价 cmap。
+  - app 25：整 run [673,277,295,461,277,350] → [675,281,302,464,281,351]（形选）。
+  - app 26：[675,281,302,464,281,351] → [675,281,303,471,281,351]（464→471、302→303）。
+- **与 wineusp 权威 stage 逐位对齐**：app25-enter==cmap；app25-leave/app26-enter==ccmp#1；
+  app26-leave==final（=rclt#33(464→471)+rclt#41(302→303) 净效果）。native final ==
+  wineusp final == pyusp/usp10 final = [675,281,303,471,281,351]。
+- **2 字形 ᠰᠠ 验证**：10 apps；app9 [673,277]→[675,278]；app10 no-op；final [675,278] 精确。
+- **结论/边界**：TextShaping 引擎融合（无逐-lookup 函数边界，前已验证）。native 可交付 =
+  逐 glyph/逐应用的 run 状态 trace（cmap 基形解析 + 末尾整 run 两次形选到 final），
+  marker(FVS 273/274/275) 的逐 lookup 中间态被融合进 app26 内部、native 不暴露；
+  **逐 lookup 命名 stage 仍唯一来自 wineusp**（ccmp→rclt#1..49）。native trace 与
+  wineusp 的关系 = 状态等价（cmap/ccmp/final 三态逐一吻合），非逐 lookup 一一对应。
+- trace JSON 在 tools/native_spike/（gitignored）：native_trace_saihan.json /
+  native_trace_sa.json / wine_trace.json。
