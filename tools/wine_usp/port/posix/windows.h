@@ -10,6 +10,11 @@
 #include "winnls.h"
 #include "winreg.h"
 
+/* MSVCRT name aliases missing on POSIX (Wine sources use them) */
+#include <stdio.h>
+#define _snprintf snprintf
+#define _vsnprintf vsnprintf
+
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x0600
 #endif

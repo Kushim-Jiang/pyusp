@@ -147,8 +147,8 @@ int WINAPI wsprintfW(LPWSTR out, LPCWSTR fmt, ...)
             const char *f = (p[1]==L'd')?"%ld":(p[1]==L'u')?"%lu":(p[1]==L'X')?"%lX":"%lx";
             snprintf(tmp, sizeof(tmp), f, v); d += emit_ascii(d, tmp); p += 2; continue;
         }
-        if (*p == L'x' || *p == L'X') { unsigned long v = va_arg(ap, unsigned int); snprintf(tmp, sizeof(tmp), (*p=='X')?"%X":"%x", v); d += emit_ascii(d, tmp); p++; continue; }
-        if (*p == L'o') { unsigned long v = va_arg(ap, unsigned int); snprintf(tmp, sizeof(tmp), "%o", v); d += emit_ascii(d, tmp); p++; continue; }
+        if (*p == L'x' || *p == L'X') { unsigned int v = (unsigned int)va_arg(ap, unsigned int); snprintf(tmp, sizeof(tmp), (*p=='X')?"%X":"%x", v); d += emit_ascii(d, tmp); p++; continue; }
+        if (*p == L'o') { unsigned int v = (unsigned int)va_arg(ap, unsigned int); snprintf(tmp, sizeof(tmp), "%o", v); d += emit_ascii(d, tmp); p++; continue; }
         *d++ = L'%'; if (*p) *d++ = *p++;
     }
     *d = 0;

@@ -48,8 +48,8 @@ jobs:
               src/mirror.c src/opentype.c src/shape.c src/shaping.c src/trace.c \
               src/usp10.c posix/posix_compat.c \
               -lm -o build/test_posix
-          ./build/test_posix ../../testdata/NotoSansMongolian-Regular.ttf > build/trace.txt
-          python3 ../../compare_trace.py build/trace.txt ../../testdata/noto-saikhan-windows-golden.json
+          ./build/test_posix ../testdata/NotoSansMongolian-Regular.ttf > build/trace.txt
+          python3 ../compare_trace.py build/trace.txt ../testdata/noto-saikhan-windows-golden.json
 
   windows:
     name: windows (mingw)
@@ -80,6 +80,6 @@ jobs:
               src/usp10.c \
               -lgdi32 -luser32 -lkernel32 \
               -o build/test_posix.exe
-          FONT="$(cygpath -w "$(pwd)/../../testdata/NotoSansMongolian-Regular.ttf")"
+          FONT="$(cygpath -w "$(pwd)/../testdata/NotoSansMongolian-Regular.ttf")"
           ./build/test_posix.exe "$FONT" > build/trace.txt
-          python ../../compare_trace.py build/trace.txt ../../testdata/noto-saikhan-windows-golden.json
+          python ../compare_trace.py build/trace.txt ../testdata/noto-saikhan-windows-golden.json
