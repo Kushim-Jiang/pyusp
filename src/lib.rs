@@ -578,6 +578,7 @@ impl<'a> ShapeRun<'a> {
         let ret_probe = std::env::var_os("PYUSP_RET_PROBE").is_some();
         let ts_probe = std::env::var_os("PYUSP_TS_PROBE").is_some();
         let ts_ret = std::env::var_os("PYUSP_TS_RET").is_some();
+        let native_run = std::env::var_os("PYUSP_NATIVE_RUN").is_some();
         if ts_probe {
             // TextShaping is the real OT engine; count fires of its candidate
             // apply-driver / parse entries to find the per-lookup frequency.
@@ -684,6 +685,83 @@ impl<'a> ShapeRun<'a> {
             }
         } else if worker_probe {
             worker_hook::arm_once();
+        } else if native_run {
+            // In-process native per-application trace (PoC): hook the TextShaping
+            // "apply one OT op" driver and record the r9-> glyph run at every
+            // fire, so the real engine's per-glyph/per-app stages are produced
+            // without frida. TextShaping loads lazily during ScriptShapeOpenType,
+            // so force it into memory first.
+            //
+            // Instead of a hardcoded build-specific RVA, the driver is located by
+            // scanning the loaded module's .text for its unique prologue signature
+            // (6 pushes + `lea rbp,[rsp-0x218]; sub rsp,0x318`). This supports any
+            // Windows build whose engine keeps that prologue, and degrades
+            // gracefully (no native stages) when it is not found. The hooked
+            // prologue is 6 bytes (push rbp/rsi/r12/r13) -> clean trampoline
+            // boundary. Signature from Win11 10.0.26100 TextShaping @0x15650.
+            let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
+            unsafe {
+                windows::Win32::System::LibraryLoader::LoadLibraryW(
+                    windows::core::PCWSTR(wname.as_ptr()),
+                );
+            }
+            let cname = std::ffi::CString::new("TextShaping.dll").unwrap();
+            let gbase = unsafe {
+                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
+                    cname.as_ptr() as *const u8,
+                ))
+                .map(|h| h.0 as u64)
+                .unwrap_or(0)
+            };
+            if gbase != 0 {
+                // signature: push rbp; push rsi; push r12; push r13; push r14;
+                // push r15; lea rbp,[rsp-0x218] (first 13 bytes)
+                const SIG: [u8; 13] = [
+                    0x40, 0x55, 0x56, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41,
+                    0x57, 0x48, 0x8D,
+                ];
+                let basep = gbase as *const u8;
+                unsafe fn r16(p: *const u8) -> u16 {
+                    std::ptr::read_unaligned(p as *const u16)
+                }
+                unsafe fn r32(p: *const u8) -> u32 {
+                    std::ptr::read_unaligned(p as *const u32)
+                }
+                let img_size = unsafe {
+                    let pe = r32(basep.add(0x3C)) as usize;
+                    let magic = r16(basep.add(pe + 24));
+                    let _ = magic;
+                    r32(basep.add(pe + 24 + 56)) as usize // SizeOfImage
+                };
+                let mut drv: Option<u64> = None;
+                let blob =
+                    unsafe { std::slice::from_raw_parts(basep, img_size) };
+                let mut i = 0x1000usize;
+                while i + SIG.len() <= img_size {
+                    if &blob[i..i + SIG.len()] == &SIG {
+                        if drv.is_none() {
+                            drv = Some(i as u64);
+                            i += SIG.len();
+                            continue;
+                        }
+                        drv = None; // ambiguous: multiple matches -> unsafe
+                        break;
+                    }
+                    i += 1;
+                }
+                if let Some(rva) = drv {
+                    eprintln!(
+                        "[nativerun] base={gbase:#x} sig-driver rva={rva:#x} (img {img_size:#x})"
+                    );
+                    self.callee_guard = Some(unsafe {
+                        worker_hook::arm_rvas_run(gbase, &[(rva, 6)])
+                    });
+                } else {
+                    eprintln!(
+                        "[nativerun] TextShaping driver signature not found (img {img_size:#x}) — no native stages on this build"
+                    );
+                }
+            }
         }
         // Ask for logical-order glyph arrays (like HarfBuzz) so RTL runs can
         // be compared 1:1. Preserve all flags ScriptItemize set.
@@ -779,6 +857,34 @@ impl<'a> ShapeRun<'a> {
             ));
         }
         let n = cglyphs as usize;
+
+        // In-process native per-application trace report (PYUSP_NATIVE_RUN):
+        // dump the glyph-run state at every TextShaping 0x15650 application and
+        // validate the final captured run equals the shaped glyph output.
+        if native_run {
+            let steps = worker_hook::drain_run_steps();
+            eprintln!("[nativerun] apps={}", steps.len());
+            let fin: Vec<u16> = glyphs[..n].to_vec();
+            let mut last: Option<Vec<u16>> = None;
+            for (i, (rva, gids)) in steps.iter().enumerate() {
+                let changed = last.as_ref().map(|l| l != gids).unwrap_or(true);
+                if changed {
+                    eprintln!(
+                        "[nativerun] app#{} rva={rva:#x} run={gids:?}",
+                        i + 1
+                    );
+                }
+                last = Some(gids.clone());
+            }
+            eprintln!(
+                "[nativerun] last_run={:?} shaped_final={fin:?} match={}",
+                steps.last().map(|s| &s.1),
+                steps
+                    .last()
+                    .map(|s| s.1 == fin)
+                    .unwrap_or(false)
+            );
+        }
 
         // Glyph in-place probe report: dedupe consecutive buffer states across
         // per-glyph getter fires (0x4b720/0x4e180/0x4cfb0).

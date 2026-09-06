@@ -329,3 +329,24 @@ buffer"的代码；或先扩大 RIP 采样到**16B 内逐条**(改桶粒度/加�
   "native TextShaping app N/N"）。
 - 边界重申：这是 native 可交付的逐 glyph/逐应用 stages（真实 gid、非 final-only）；
   名字/lookup 粒度只来自 wineusp。
+
+
+## 检查点12（2026-09-06）：native-run 版本无关化——签名自动定位驱动
+- **动机**：进程内 TextShaping 逐应用 trace 的 hook 目标(0x15650)是 build 专属 RVA。
+  "支持更多版本"不能靠硬编码表，改为**运行时扫 .text 的字节签名定位驱动**。
+- **签名**：驱动 prologue `push rbp;push rsi;push r12;push r13;push r14;push r15;
+  lea rbp,[rsp-0x218];sub rsp,0x318`。取前 13B `40 55 56 41 54 41 55 41 56 41 57 48 8D`
+  (前 8B 在 26100 .text 唯一出现 1 次；13B 更稳)。full 24B 带 0x218/0x318 偏移可复验。
+- **引擎(PYUSP_NATIVE_RUN)**：LoadLibraryW(TextShaping) → 读 PE SizeOfImage →
+  扫 [0x1000..img) 找唯一匹配 → hook 那里(prologue=6, 干净边界)。无/多匹配→不 hook
+  (优雅回退单 stage)。本机验证：sig-driver rva=0x15650，26 apps 复现一致。
+- **fail-safe**：on_capture_run 加用户态规范指针守卫(v/run 须 in [0x10000,
+  0x7fffffffffff])，跨 build 若签命中但 r9 语义不同→跳过不崩。
+- **tools/ts_driver_find.py**：给任意 TextShaping.dll 文件→报版本+签名匹配数+driver
+  RVA+表条目(离线, 无需 frida/objdump)。换机器/新 build 时跑它即可确认支持或拿 RVA。
+- **现实限制**：uupdump/rg-adguard 403 拿不到其它 build DLL，且本机(26100)无法运行验证
+  别的 build(OS 只加载自己的 TextShaping)。跨 build 的 r9→run 语义只在 26100 验证过；
+  其它 build 靠"签名命中+指针守卫+last_run vs shaped_final 自检"兜底。
+  本机 TextShaping = 10.0.26100.9278。
+- 工具：tools/frida_ts_*.py 为外部对照；本机制使 usp10 backend 的逐应用 trace 不依赖
+  frida。接进 wheel(backend=usp10 & trace=True)仍未做——下一步。

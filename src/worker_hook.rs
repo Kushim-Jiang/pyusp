@@ -397,6 +397,119 @@ unsafe fn hook_one_boundary(target: u64, arg: i8, tag: u32, prologue: usize) -> 
     One { target, block, restore }
 }
 
+// ---- native per-application run capture (PoC, PYUSP_NATIVE_RUN) ----
+// TextShaping driver 0x15650 = "apply one OT op over the run". At its entry,
+// r9 (4th arg) points to a stack slot whose qword value is the heap u16
+// glyph-run array; each record is {u16 gid, u16 flag, u16 logIdx, u16 1}.
+// This lightweight hook reads the gid run at every fire so the native
+// per-application trace can be recorded in-process (no frida needed).
+pub static RUN_STEPS: Mutex<Vec<(u32, Vec<u16>)>> = Mutex::new(Vec::new());
+
+pub fn run_clear() {
+    if let Ok(mut s) = RUN_STEPS.lock() {
+        s.clear();
+    }
+}
+
+pub fn drain_run_steps() -> Vec<(u32, Vec<u16>)> {
+    let mut out = Vec::new();
+    if let Ok(mut s) = RUN_STEPS.lock() {
+        out.append(&mut s);
+    }
+    out
+}
+
+unsafe extern "C" fn on_capture_run(tag: u32, v: u64) -> u64 {
+    // Fail-safe guards: only trust user-mode canonical pointers. On a build
+    // where the signature matched a different function, r9 may not be a
+    // pointer — skip instead of faulting the shaping thread.
+    if v < 0x10000 || v > 0x0000_7fff_ffff_ffff {
+        return 0;
+    }
+    let run = *(v as *const u64); // deref the stack slot -> heap run ptr
+    if run < 0x10000 || run > 0x0000_7fff_ffff_ffff {
+        return 0;
+    }
+    // records {gid, flag, logIdx, _}: collect gids while logIdx increments.
+    let mut gids: Vec<u16> = Vec::with_capacity(16);
+    let mut prev: i32 = -1;
+    for i in 0..24usize {
+        let rec = (run as *const u16).add(i * 4);
+        let g = ptr::read_volatile(rec);
+        let idx = ptr::read_volatile(rec.add(2)) as i32;
+        if g == 0 {
+            break;
+        }
+        if i > 0 && idx != prev + 1 {
+            break;
+        }
+        prev = idx;
+        gids.push(g);
+    }
+    if let Ok(mut s) = RUN_STEPS.lock() {
+        s.push((tag, gids));
+    }
+    0
+}
+
+/// Arm run capture on a set of RVAs (each hooked at entry, capturing r9).
+pub unsafe fn arm_rvas_run(base: u64, rvas: &[(u64, usize)]) -> Guard {
+    run_clear();
+    let mut hooks = Vec::new();
+    for &(rva, prologue) in rvas {
+        if prologue < 5 {
+            continue;
+        }
+        hooks.push(hook_one_boundary_run(base + rva, rva as u32, prologue));
+    }
+    Guard { hooks }
+}
+
+/// Boundary-aware hook that forwards the original r9 (arg 3) to on_capture_run.
+unsafe fn hook_one_boundary_run(target: u64, tag: u32, prologue: usize) -> One {
+    let cap = prologue.clamp(5, 64);
+    let orig: &[u8] = &*ptr::slice_from_raw_parts(target as *const u8, cap);
+    let block = alloc_near(target, 0x300);
+    let block_base = block as u64;
+    let tramp = block_base;
+    let stub = block_base + 0x100;
+
+    let mut t: Vec<u8> = Vec::new();
+    t.extend_from_slice(&orig[..cap]);
+    t.extend_from_slice(&rel_jmp(tramp + t.len() as u64, target + cap as u64));
+    ptr::copy_nonoverlapping(t.as_ptr(), tramp as *mut u8, t.len());
+
+    let mut s: Vec<u8> = Vec::new();
+    s.extend_from_slice(&[0x48, 0x83, 0xEC, 0x50]); // sub rsp,0x50
+    s.extend_from_slice(&[0x48, 0x89, 0x4C, 0x24, 0x20]);
+    s.extend_from_slice(&[0x48, 0x89, 0x54, 0x24, 0x28]);
+    s.extend_from_slice(&[0x4C, 0x89, 0x44, 0x24, 0x30]);
+    s.extend_from_slice(&[0x4C, 0x89, 0x4C, 0x24, 0x38]); // [rsp+0x38]=r9
+    s.extend_from_slice(&[0x48, 0xB9]); // rcx = tag
+    s.extend_from_slice(&(tag as u64).to_le_bytes());
+    s.extend_from_slice(&[0x48, 0x8B, 0x54, 0x24, 0x38]); // rdx = orig r9
+    s.extend_from_slice(&[0x48, 0xB8]); // rax = on_capture_run
+    s.extend_from_slice(&(on_capture_run as *const () as usize as u64).to_le_bytes());
+    s.extend_from_slice(&[0xFF, 0xD0]); // call rax
+    s.extend_from_slice(&[0x48, 0x8B, 0x4C, 0x24, 0x20]);
+    s.extend_from_slice(&[0x48, 0x8B, 0x54, 0x24, 0x28]);
+    s.extend_from_slice(&[0x4C, 0x8B, 0x44, 0x24, 0x30]);
+    s.extend_from_slice(&[0x4C, 0x8B, 0x4C, 0x24, 0x38]);
+    s.extend_from_slice(&[0x48, 0x83, 0xC4, 0x50]);
+    s.extend_from_slice(&rel_jmp(stub + s.len() as u64, tramp));
+    ptr::copy_nonoverlapping(s.as_ptr(), stub as *mut u8, s.len());
+
+    let patch = rel_jmp(target, stub);
+    let restore = orig[..5].to_vec();
+    let mut old = PAGE_PROTECTION_FLAGS(0);
+    let page = (target & !0xFFF) as *const c_void;
+    VirtualProtect(page, 0x1000, PAGE_EXECUTE_READWRITE, &mut old).ok();
+    ptr::copy_nonoverlapping(patch.as_ptr(), target as *mut u8, patch.len());
+    let _ = VirtualProtect(page, 0x1000, old, &mut old);
+
+    One { target, block, restore }
+}
+
 // ---- RIP sampler (poor-man's profiler) ----
 // A helper thread suspends the (main, shaping) thread and reads its RIP,
 // bucketed to 16 bytes within gdi32full, so Mongolian-vs-latin shape heat can
