@@ -1,4 +1,4 @@
-"""pyusp — Uniscribe (usp10) OpenType shaping tracer (Windows only).
+"""pyusp — Uniscribe (usp10) OpenType shaping tracer.
 
 Returns the babelsoft ``/api/opentype/shape`` engine dict (Crowbar-style
 stages), with the shaping done **in-process** by a Uniscribe implementation
@@ -6,20 +6,23 @@ loaded through the native PyO3 extension ``pyusp._pyusp``.
 
 Two engines are available (``backend``):
 
-* ``"usp10"`` — Microsoft Uniscribe. Prefers the app-local ``usp10.dll``
-  bundled in this wheel (version-pinned, dev/test only) and falls back to
-  the system copy. No per-lookup trace is possible (its engine runs inside
-  ``gdi32full.dll`` with no public callback) — a single whole-run stage is
-  returned.
+* ``"usp10"`` — Microsoft Uniscribe (Windows only). Prefers the app-local
+  ``usp10.dll`` bundled in the wheel (version-pinned, dev/test only) and
+  falls back to the system copy. No per-lookup trace is possible (its engine
+  runs inside ``gdi32full.dll`` with no public callback) — a single
+  whole-run stage is returned.
 * ``"wineusp"`` — **Wine's open-source Uniscribe reimplementation**
-  (``dlls/gdi32/uniscribe``, LGPL 2.1+), compiled standalone as the bundled
-  ``wineusp.dll``. It is genuinely redistributable and exposes a real
-  per-lookup trace: when ``trace=True`` the returned ``stages`` are the
-  actual cmap → per-GSUB-lookup → final snapshots recorded inside the
-  shaper (see ``NOTICE-wineusp.md``).
+  (``dlls/gdi32/uniscribe``, LGPL 2.1+), compiled standalone per platform as
+  ``wineusp.dll`` / ``libwineusp.dylib`` / ``libwineusp.so``. It is genuinely
+  redistributable and exposes a real per-lookup trace: when ``trace=True`` the
+  returned ``stages`` are the actual cmap → per-GSUB-lookup → final snapshots
+  recorded inside the shaper (see ``NOTICE-wineusp.md``). On non-Windows the
+  engine shapes in "bytes mode" (raw font bytes + NULL hdc) — identical
+  results to Windows (cross-platform parity is CI-tested).
 * ``"auto"`` — ``wineusp`` when bundled, else system ``usp10``.
 
-This package is Windows-only. Importing on any other OS raises OSError.
+Cross-platform: ``wineusp`` runs on Windows, Linux and macOS. ``usp10`` is
+Windows-only (it drives Microsoft Uniscribe / usp10.dll).
 """
 
 from __future__ import annotations
@@ -29,35 +32,39 @@ import os
 import sys
 from pathlib import Path
 
-if os.name != "nt":
-    raise OSError(
-        "pyusp is Windows-only (it drives Microsoft Uniscribe / usp10.dll)."
-    )
-
 try:
     from . import _pyusp
 except ImportError as e:  # pragma: no cover - only when the wheel is broken
     raise ImportError(
         "pyusp native module missing — the wheel is corrupt, or it was built "
-        "for a different Python/ABI. Reinstall the Windows wheel."
+        "for a different Python/ABI. Reinstall the platform wheel."
     ) from e
 
 _DLL = Path(__file__).with_name("usp10.dll")
-_WINE_DLL = Path(__file__).with_name("wineusp.dll")
+if os.name == "nt":
+    _WINE_NAME = "wineusp.dll"
+    _SYSTEM_USP10 = "usp10.dll"
+elif sys.platform == "darwin":
+    _WINE_NAME = "libwineusp.dylib"
+    _SYSTEM_USP10 = "libwineusp.dylib"  # never used; usp10 backend is nt-only
+else:
+    _WINE_NAME = "libwineusp.so"
+    _SYSTEM_USP10 = "libwineusp.so"
+_WINE_DLL = Path(__file__).with_name(_WINE_NAME)
 
 
 def _require_dll() -> str:
     # Bundled app-local copy first (version-pinned); else let the engine load
-    # the system usp10.dll by name.
+    # the system usp10 by name. (usp10 backend is Windows-only.)
     if _DLL.exists():
         return str(_DLL)
-    return "usp10.dll"
+    return _SYSTEM_USP10
 
 
 def _require_wineusp() -> str:
     if not _WINE_DLL.exists():
         raise FileNotFoundError(
-            "wineusp.dll is not bundled in this wheel (backend='wineusp' needs "
+            f"{_WINE_NAME} is not bundled in this wheel (backend='wineusp' needs "
             "a build that includes the Wine Uniscribe port)."
         )
     return str(_WINE_DLL)
