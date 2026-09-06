@@ -1,5 +1,6 @@
-# Build the Windows pyusp wheel and publish it to PyPI using trusted
-# publishing (OpenID Connect). No API token is stored anywhere.
+# Build the pyusp wheels for Windows, Linux and macOS and publish them to
+# PyPI using trusted publishing (OpenID Connect). No API token is stored
+# anywhere.
 #
 # Prereqs:
 #   1. This file is on the repo's default branch.
@@ -10,9 +11,10 @@
 #      recommended: restrict who may run this deploy).
 #   4. Trigger by pushing a tag `v*` (or manual "Run workflow").
 #
-# The wheel is built on Windows WITHOUT bundling the Microsoft usp10.dll
-# (git-ignored, so absent in CI); it ships wineusp.dll (LGPL, committed) and
-# falls back to the system usp10.dll at runtime.
+# Wheels ship the Wine Uniscribe port (LGPL): wineusp.dll on Windows
+# (committed), libwineusp.so/.dylib built on Linux/macOS from
+# tools/wine_usp/port. The Microsoft usp10.dll is NOT redistributable and is
+# never bundled; the usp10 backend falls back to the system copy at runtime.
 
 name: publish
 
@@ -26,11 +28,24 @@ permissions:
   id-token: write # OIDC for PyPI trusted publishing
 
 jobs:
-  # The wheel is built on Windows (the pyusp engine is Windows-native today).
-  # pypa/gh-action-pypi-publish only runs on GNU/Linux, so the publish job is a
-  # separate ubuntu job that downloads the built artifact.
+  # Cross-platform wheel matrix. Every runner bundles its native Wine
+  # Uniscribe port: Windows ships the committed wineusp.dll; Linux/macOS run
+  # tools/wine_usp/port/build_posix.sh and copy the resulting
+  # libwineusp.so/.dylib into the package dir (maturin auto-includes every
+  # file there). pypa/gh-action-pypi-publish only runs on GNU/Linux, so the
+  # publish job is a separate ubuntu job that downloads all built artifacts.
   build:
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            lib: ""                 # wineusp.dll already committed in python/pyusp/
+          - os: ubuntu-latest
+            lib: libwineusp.so
+          - os: macos-latest
+            lib: libwineusp.dylib
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
 
@@ -40,6 +55,14 @@ jobs:
       - name: Install maturin
         run: python -m pip install maturin twine
 
+      - name: Build native libwineusp (POSIX only)
+        if: matrix.lib != ''
+        run: sh tools/wine_usp/port/build_posix.sh
+
+      - name: Bundle libwineusp into the package dir (POSIX only)
+        if: matrix.lib != ''
+        run: cp tools/wine_usp/port/${{ matrix.lib }} python/pyusp-wheel/python/pyusp/
+
       - name: Build wheel (publish shape - no MS usp10.dll)
         working-directory: python/pyusp-wheel
         run: python -m maturin build --release -o dist
@@ -48,10 +71,16 @@ jobs:
         working-directory: python/pyusp-wheel
         run: python -m twine check dist/*.whl
 
+      - name: Install wheel
+        run: python -m pip install --force-reinstall --no-deps python/pyusp-wheel/dist/*.whl
+
+      - name: Python parity check (installed wheel)
+        run: python tools/wine_usp/check_wheel_parity.py
+
       - name: Upload wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-${{ matrix.os }}
           path: python/pyusp-wheel/dist/*.whl
           if-no-files-found: error
 
@@ -62,7 +91,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: wheels
+          pattern: wheels-*
+          merge-multiple: true
           path: dist
 
       - name: Publish to PyPI (trusted publishing / OIDC)

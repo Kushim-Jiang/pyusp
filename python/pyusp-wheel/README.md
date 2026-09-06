@@ -1,4 +1,4 @@
-# pyusp — Uniscribe (usp10) OpenType shaping tracer (Windows-only wheel)
+# pyusp — Uniscribe (usp10) OpenType shaping tracer (Windows / Linux / macOS wheel)
 
 PyO3 abi3 wheel (`pyusp-…-py3-none-win_amd64.whl`) wrapping the `pyusp` Rust
 engine. Shapes in-process via a Uniscribe implementation and returns the

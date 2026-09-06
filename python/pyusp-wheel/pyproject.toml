@@ -4,8 +4,8 @@ build-backend = "maturin"
 
 [project]
 name = "pyusp"
-version = "0.3.0"
-description = "Uniscribe (usp10) OpenType shaping tracer (babelsoft /api/opentype/shape compatible). WINDOWS ONLY."
+version = "0.4.0"
+description = "Uniscribe (usp10) OpenType shaping tracer (babelsoft /api/opentype/shape compatible). Cross-platform: Windows, Linux, macOS."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
@@ -19,6 +19,8 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Rust",
