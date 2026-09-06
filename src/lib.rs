@@ -20,23 +20,47 @@ use std::mem;
 use std::ptr;
 
 use serde_json::{json, Value};
-use windows::core::{PCSTR, PCWSTR};
-use windows::Win32::Foundation::HMODULE;
-use windows::Win32::Globalization::{
+
+// Windows build: the `windows` crate provides the Win32/Uniscribe types and
+// the loading functions. Non-Windows: the crate has no `Win32` module, so we
+// use src/ffi.rs mirrors (identical layouts) + a dlopen-based loader.
+#[cfg(windows)]
+pub use windows::core::{PCSTR, PCWSTR};
+#[cfg(windows)]
+pub use windows::Win32::Foundation::HMODULE;
+#[cfg(windows)]
+pub use windows::Win32::Globalization::{
     GOFFSET, OPENTYPE_FEATURE_RECORD, SCRIPT_ANALYSIS, SCRIPT_CHARPROP, SCRIPT_CONTROL,
     SCRIPT_GLYPHPROP, SCRIPT_ITEM, SCRIPT_STATE, SCRIPT_VISATTR, TEXTRANGE_PROPERTIES,
 };
-use windows::Win32::Graphics::Gdi::{
+#[cfg(windows)]
+pub use windows::Win32::Graphics::Gdi::{
     ABC, DEFAULT_CHARSET, DEFAULT_QUALITY, FR_PRIVATE, HDC, HFONT, HGDIOBJ, LOGFONTW,
 };
-use windows::Win32::Graphics::Gdi::{
+#[cfg(windows)]
+pub use windows::Win32::Graphics::Gdi::{
     AddFontResourceExW, CreateCompatibleDC, CreateFontIndirectW, DeleteDC, DeleteObject,
     RemoveFontResourceExW, SelectObject,
 };
-use windows::Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW};
+#[cfg(windows)]
+pub use windows::Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW};
 
+#[cfg(not(windows))]
+mod ffi;
+#[cfg(not(windows))]
+pub use ffi::{
+    ABC, GOFFSET, HDC, HFONT, HGDIOBJ, HMODULE, OPENTYPE_FEATURE_RECORD, SCRIPT_ANALYSIS,
+    SCRIPT_CHARPROP, SCRIPT_CONTROL, SCRIPT_GLYPHPROP, SCRIPT_ITEM, SCRIPT_STATE,
+    SCRIPT_VISATTR, TEXTRANGE_PROPERTIES,
+};
+
+// In-process inline-hook machinery is a Windows-only RE probe (native
+// TextShaping per-glyph trace). Not present on Linux/macOS.
+#[cfg(windows)]
 pub mod pe;
+#[cfg(windows)]
 pub mod selfhook;
+#[cfg(windows)]
 pub mod worker_hook;
 
 // ---------------------------------------------------------------------------
