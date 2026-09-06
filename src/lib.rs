@@ -20,24 +20,188 @@ use std::mem;
 use std::ptr;
 
 use serde_json::{json, Value};
-use windows::core::{PCSTR, PCWSTR};
-use windows::Win32::Foundation::HMODULE;
-use windows::Win32::Globalization::{
+
+// Windows build: the `windows` crate provides the Win32/Uniscribe types and
+// the loading functions. Non-Windows: the crate has no `Win32` module, so we
+// use src/ffi.rs mirrors (identical layouts) + a dlopen-based loader.
+#[cfg(windows)]
+pub use windows::core::{PCSTR, PCWSTR};
+#[cfg(windows)]
+pub use windows::Win32::Foundation::HMODULE;
+#[cfg(windows)]
+pub use windows::Win32::Globalization::{
     GOFFSET, OPENTYPE_FEATURE_RECORD, SCRIPT_ANALYSIS, SCRIPT_CHARPROP, SCRIPT_CONTROL,
     SCRIPT_GLYPHPROP, SCRIPT_ITEM, SCRIPT_STATE, SCRIPT_VISATTR, TEXTRANGE_PROPERTIES,
 };
-use windows::Win32::Graphics::Gdi::{
+#[cfg(windows)]
+pub use windows::Win32::Graphics::Gdi::{
     ABC, DEFAULT_CHARSET, DEFAULT_QUALITY, FR_PRIVATE, HDC, HFONT, HGDIOBJ, LOGFONTW,
 };
-use windows::Win32::Graphics::Gdi::{
+#[cfg(windows)]
+pub use windows::Win32::Graphics::Gdi::{
     AddFontResourceExW, CreateCompatibleDC, CreateFontIndirectW, DeleteDC, DeleteObject,
     RemoveFontResourceExW, SelectObject,
 };
-use windows::Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW};
+#[cfg(windows)]
+pub use windows::Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW};
 
+#[cfg(not(windows))]
+mod ffi;
+#[cfg(not(windows))]
+pub use ffi::{
+    ABC, GOFFSET, HDC, HFONT, HGDIOBJ, HMODULE, OPENTYPE_FEATURE_RECORD, SCRIPT_ANALYSIS,
+    SCRIPT_CHARPROP, SCRIPT_CONTROL, SCRIPT_GLYPHPROP, SCRIPT_ITEM, SCRIPT_STATE,
+    SCRIPT_VISATTR, TEXTRANGE_PROPERTIES,
+};
+
+// In-process inline-hook machinery is a Windows-only RE probe (native
+// TextShaping per-glyph trace). Not present on Linux/macOS.
+#[cfg(windows)]
 pub mod pe;
+#[cfg(windows)]
 pub mod selfhook;
+#[cfg(windows)]
 pub mod worker_hook;
+
+// ---------------------------------------------------------------------------
+// loader — dynamic module loading + symbol resolution (Windows LoadLibraryW /
+// GetProcAddress, POSIX dlopen / dlsym).
+// ---------------------------------------------------------------------------
+#[cfg(windows)]
+mod loader {
+    use super::*;
+    pub type Lib = HMODULE;
+
+    pub unsafe fn open(path: Option<&str>) -> Result<Lib, String> {
+        let dll = path.unwrap_or("usp10.dll");
+        let w: Vec<u16> = dll.encode_utf16().chain(std::iter::once(0)).collect();
+        let m = LoadLibraryW(PCWSTR(w.as_ptr()))
+            .map_err(|e| format!("LoadLibraryW({dll}): {e}"))?;
+        if m.0.is_null() {
+            return Err(format!("LoadLibraryW({dll}) returned null handle"));
+        }
+        Ok(m)
+    }
+
+    pub unsafe fn symbol(lib: Lib, name: &[u8]) -> Option<*const c_void> {
+        GetProcAddress(lib, PCSTR(name.as_ptr())).map(|p| p as *const c_void)
+    }
+
+    pub fn base(lib: Lib) -> u64 {
+        lib.0 as u64
+    }
+
+    pub unsafe fn module_handle_wide_forced(wname: &[u16]) -> u64 {
+        // RE probes: force a DLL into memory (returns 0 if it is not present —
+        // e.g. TextShaping on older builds).
+        LoadLibraryW(PCWSTR(wname.as_ptr()))
+            .map(|h| h.0 as u64)
+            .unwrap_or(0)
+    }
+
+    pub unsafe fn module_handle_a(name: &[u8]) -> u64 {
+        windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
+            name.as_ptr(),
+        ))
+        .map(|h| h.0 as u64)
+        .unwrap_or(0)
+    }
+}
+
+#[cfg(not(windows))]
+mod loader {
+    use std::ffi::c_void;
+    pub type Lib = crate::HMODULE;
+
+    extern "C" {
+        fn dlopen(filename: *const u8, flag: i32) -> *mut c_void;
+        fn dlsym(handle: *mut c_void, symbol: *const u8) -> *mut c_void;
+    }
+
+    /// Default POSIX module name (the natively-built Wine Uniscribe port).
+    pub fn default_module_name() -> String {
+        std::env::var("PYUSP_WINEUSP")
+            .unwrap_or_else(|_| {
+                if cfg!(target_os = "macos") {
+                    "libwineusp.dylib".to_owned()
+                } else {
+                    "libwineusp.so".to_owned()
+                }
+            })
+    }
+
+    pub unsafe fn open(path: Option<&str>) -> Result<Lib, String> {
+        let dll = path.map(|s| s.to_owned()).unwrap_or_else(default_module_name);
+        let c = std::ffi::CString::new(dll.as_str())
+            .map_err(|e| format!("bad module path: {e}"))?;
+        // RTLD_NOW = 2 on glibc and macOS.
+        let h = dlopen(c.as_ptr() as *const u8, 2);
+        if h.is_null() {
+            return Err(format!("dlopen({dll}) failed (libwineusp not built?)"));
+        }
+        Ok(crate::HMODULE(h))
+    }
+
+    pub unsafe fn symbol(lib: Lib, name: &[u8]) -> Option<*const c_void> {
+        // name must be NUL-terminated (callers pass b"name\0").
+        let p = dlsym(lib.0, name.as_ptr());
+        if p.is_null() {
+            None
+        } else {
+            Some(p)
+        }
+    }
+
+    pub fn base(lib: Lib) -> u64 {
+        lib.0 as u64
+    }
+
+    // RE probe helpers are Windows-only; no-ops on POSIX (never armed there).
+    pub unsafe fn module_handle_wide_forced(_wname: &[u16]) -> u64 {
+        0
+    }
+    pub unsafe fn module_handle_a(_name: &[u8]) -> u64 {
+        0
+    }
+}
+
+// Non-Windows no-op stand-in for worker_hook (the Windows in-process inline
+// hook machinery). The RE-probe call sites in shape_item/shape_value compile
+// against these signatures unchanged; on Linux/macOS the probe env vars are
+// never set, and even if they were the stubs return empty/no-ops.
+#[cfg(not(windows))]
+mod worker_hook {
+    pub struct Guard;
+    pub struct RipGuard;
+
+    pub fn arm_rvas(_base: u64, _rvas: &[(u64, usize)]) -> Guard {
+        Guard
+    }
+    pub fn arm_rvas_ret(_base: u64, _rvas: &[(u64, usize)]) -> Guard {
+        Guard
+    }
+    pub fn arm_rvas_run(_base: u64, _rvas: &[(u64, usize)]) -> Guard {
+        Guard
+    }
+    pub fn arm_once() {}
+    pub fn set_glyph_buf(_ptr: *mut u16, _cap: usize) {}
+    pub fn drain_run_steps() -> Vec<(u32, Vec<u16>)> {
+        Vec::new()
+    }
+    pub fn drain_glyph_steps() -> Vec<(u64, Vec<u16>)> {
+        Vec::new()
+    }
+    pub fn drain_rets() -> Vec<(u64, u64)> {
+        Vec::new()
+    }
+    pub fn drain() -> Vec<(u32, u64)> {
+        Vec::new()
+    }
+    pub fn rip_start() -> RipGuard {
+        RipGuard
+    }
+    pub fn rip_report() {}
+}
 
 // ---------------------------------------------------------------------------
 // SCRIPT_ANALYSIS / SCRIPT_STATE bit masks (usp10.h, 10.0.22621):
@@ -170,25 +334,23 @@ impl Usp10 {
         self._module.0 as u64
     }
 
-    /// Load usp10: `prefer` = explicit DLL path (bundled copy), else system.
+    /// Load usp10/wineusp: `prefer` = explicit module path, else the platform
+    /// default (Windows: system usp10.dll; POSIX: libwineusp.so/.dylib).
     pub unsafe fn load(prefer: Option<&str>) -> Result<Usp10, String> {
-        let dll: String = match prefer {
-            Some(p) => p.to_owned(),
-            None => "usp10.dll".to_owned(),
-        };
-        let w: Vec<u16> = dll.encode_utf16().chain(std::iter::once(0)).collect();
-        let module: HMODULE = LoadLibraryW(PCWSTR(w.as_ptr()))
-            .map_err(|e| format!("LoadLibraryW({dll}): {e}"))?;
-        if module.0.is_null() {
-            return Err(format!("LoadLibraryW({dll}) returned null handle"));
-        }
+        let module = loader::open(prefer)?;
         macro_rules! sym {
             ($n:literal, $t:ty) => {{
                 let name = concat!($n, "\0");
-                let p = GetProcAddress(module, PCSTR(name.as_ptr()))
-                    .ok_or_else(|| format!("GetProcAddress({}) missing", $n))?;
-                mem::transmute::<unsafe extern "system" fn() -> isize, $t>(p)
+                let p = loader::symbol(module, name.as_bytes())
+                    .ok_or_else(|| format!("{} missing in module", $n))?;
+                mem::transmute::<*const c_void, $t>(p)
             }};
+        }
+        macro_rules! opt_sym {
+            ($n:literal, $t:ty) => {
+                loader::symbol(module, concat!($n, "\0").as_bytes())
+                    .map(|p| mem::transmute::<*const c_void, $t>(p))
+            };
         }
         Ok(Usp10 {
             _module: module,
@@ -197,18 +359,12 @@ impl Usp10 {
             place_ot: sym!("ScriptPlaceOpenType", FnPlaceOT),
             free_cache: sym!("ScriptFreeCache", FnFreeCache),
             script_tags: sym!("ScriptGetFontScriptTags", FnScriptTags),
-            trace_begin: GetProcAddress(module, PCSTR(b"usp_trace_begin\0".as_ptr()))
-                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceBegin>(p)),
-            trace_count: GetProcAddress(module, PCSTR(b"usp_trace_count\0".as_ptr()))
-                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceCount>(p)),
-            trace_stage: GetProcAddress(module, PCSTR(b"usp_trace_stage\0".as_ptr()))
-                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceStage>(p)),
-            trace_stop: GetProcAddress(module, PCSTR(b"usp_trace_stop\0".as_ptr()))
-                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnTraceStop>(p)),
-            set_font_bytes: GetProcAddress(module, PCSTR(b"usp_set_font_bytes\0".as_ptr()))
-                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnSetFontBytes>(p)),
-            clear_font_bytes: GetProcAddress(module, PCSTR(b"usp_clear_font_bytes\0".as_ptr()))
-                .map(|p| mem::transmute::<unsafe extern "system" fn() -> isize, FnClearFontBytes>(p)),
+            trace_begin: opt_sym!("usp_trace_begin", FnTraceBegin),
+            trace_count: opt_sym!("usp_trace_count", FnTraceCount),
+            trace_stage: opt_sym!("usp_trace_stage", FnTraceStage),
+            trace_stop: opt_sym!("usp_trace_stop", FnTraceStop),
+            set_font_bytes: opt_sym!("usp_set_font_bytes", FnSetFontBytes),
+            clear_font_bytes: opt_sym!("usp_clear_font_bytes", FnClearFontBytes),
         })
     }
 }
@@ -229,6 +385,7 @@ fn hex_to_bytes(s: &str) -> Result<Vec<u8>, String> {
 /// RE helper: scan a loaded module (default usp10.dll) for all
 /// executable-section matches of a hex signature; returns RVAs.
 /// e.g. --scan-module gdi32full.dll --find-sig "41 57 41 56 41 55"
+#[cfg(windows)]
 pub fn scan_module_for_sig(module_path: Option<&str>, hexsig: &str) -> Result<Vec<u64>, String> {
     let dll: String = module_path.map(|s| s.to_owned()).unwrap_or_else(|| "usp10.dll".into());
     let w: Vec<u16> = dll.encode_utf16().chain(std::iter::once(0)).collect();
@@ -439,6 +596,8 @@ struct FontDc {
 }
 
 /// Add a private font resource from `path`, then select it into a memory DC.
+/// (Windows-only: POSIX builds always shape in bytes mode with a NULL hdc.)
+#[cfg(windows)]
 unsafe fn make_font_dc(path: &str, data: &[u8]) -> Result<FontDc, String> {
     let family = sfnt_family(data)
         .unwrap_or_else(|| {
@@ -499,17 +658,24 @@ unsafe fn make_font_dc(path: &str, data: &[u8]) -> Result<FontDc, String> {
 impl FontDc {
     unsafe fn cleanup(&mut self, path: &str) {
         if self.hdc.0.is_null() {
-            // bytes mode: no GDI font/DC was created — nothing to release.
+            // bytes mode (or POSIX): no GDI font/DC was created — nothing to release.
             return;
         }
-        let _ = SelectObject(self.hdc, self.prev);
-        let _ = DeleteObject(self.hfont);
-        let _ = DeleteDC(self.hdc);
-        if std::env::var("PYUSP_NO_PRIVATE").is_ok() {
-            return;
+        #[cfg(windows)]
+        {
+            let _ = SelectObject(self.hdc, self.prev);
+            let _ = DeleteObject(self.hfont);
+            let _ = DeleteDC(self.hdc);
+            if std::env::var("PYUSP_NO_PRIVATE").is_ok() {
+                return;
+            }
+            let w: Vec<u16> = path.encode_utf16().chain(std::iter::once(0)).collect();
+            let _ = RemoveFontResourceExW(PCWSTR(w.as_ptr()), FR_PRIVATE.0 as u32, None);
         }
-        let w: Vec<u16> = path.encode_utf16().chain(std::iter::once(0)).collect();
-        let _ = RemoveFontResourceExW(PCWSTR(w.as_ptr()), FR_PRIVATE.0 as u32, None);
+        #[cfg(not(windows))]
+        {
+            let _ = (self.hfont, self.prev, path);
+        }
     }
 }
 
@@ -605,18 +771,10 @@ impl<'a> ShapeRun<'a> {
             // TextShaping loads lazily during ScriptShapeOpenType, so force it.
             let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
             unsafe {
-                windows::Win32::System::LibraryLoader::LoadLibraryW(
-                    windows::core::PCWSTR(wname.as_ptr()),
-                );
+                let _ = loader::module_handle_wide_forced(&wname);
             }
             let cname = std::ffi::CString::new("TextShaping.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             if gbase != 0 {
                 eprintln!("[ts] base={gbase:#x} arming TextShaping probes");
                 let all: [(u64, usize); 7] = [
@@ -652,13 +810,7 @@ impl<'a> ShapeRun<'a> {
             // Capture the return address of each per-glyph getter fire so the
             // per-glyph driver loop (unique concentrated caller) is located.
             let cname = std::ffi::CString::new("gdi32full.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             if gbase != 0 {
                 self.callee_guard = Some(unsafe {
                     worker_hook::arm_rvas_ret(
@@ -669,13 +821,7 @@ impl<'a> ShapeRun<'a> {
             }
         } else if callee_probe || glyph_probe {
             let cname = std::ffi::CString::new("gdi32full.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             if gbase != 0 {
                 // Dispatch-table members only (guaranteed function entries).
                 // (rva, safe prologue prefix B from objdump of gdi32full 10.0.26100)
@@ -721,18 +867,10 @@ impl<'a> ShapeRun<'a> {
             // boundary. Signature from Win11 10.0.26100 TextShaping @0x15650.
             let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
             unsafe {
-                windows::Win32::System::LibraryLoader::LoadLibraryW(
-                    windows::core::PCWSTR(wname.as_ptr()),
-                );
+                let _ = loader::module_handle_wide_forced(&wname);
             }
             let cname = std::ffi::CString::new("TextShaping.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             if gbase != 0 {
                 // signature: push rbp; push rsi; push r12..r15;
                 // lea rbp,[rsp-0x218]; sub rsp,0x318 (full 24-byte prologue).
@@ -943,13 +1081,7 @@ impl<'a> ShapeRun<'a> {
             let rets = worker_hook::drain_rets();
             use std::ffi::CString;
             let cname = CString::new("gdi32full.dll").unwrap();
-            let gbase = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    cname.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let gbase = unsafe { loader::module_handle_a(cname.as_bytes_with_nul()) };
             eprintln!("[ret] fires={} base={gbase:#x}", rets.len());
             let mut agg: std::collections::BTreeMap<(u64, u64), u32> =
                 std::collections::BTreeMap::new();
@@ -962,29 +1094,38 @@ impl<'a> ShapeRun<'a> {
             // console-width truncation of the *> redirect.
             let mut modbase: u64 = 0;
             for ((rva, caller), c) in agg {
-                let (mbase, mname) = unsafe {
-                    let mut h = windows::Win32::Foundation::HMODULE(std::ptr::null_mut());
-                    let ok = windows::Win32::System::LibraryLoader::GetModuleHandleExW(
-                        windows::Win32::System::LibraryLoader::GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-                        windows::core::PCWSTR(caller as *const u16),
-                        &mut h,
-                    )
-                    .is_ok();
-                    if ok && !h.is_invalid() {
-                        let mut buf = [0u16; 260];
-                        let n = windows::Win32::System::LibraryLoader::GetModuleFileNameW(
-                            h,
-                            &mut buf,
-                        );
-                        let name = String::from_utf16_lossy(&buf[..n as usize]);
-                        let short = name
-                            .rsplit('\\')
-                            .next()
-                            .unwrap_or(&name)
-                            .to_string();
-                        (h.0 as u64, short)
-                    } else {
-                        (0, String::new())
+                let (mbase, mname) = {
+                    #[cfg(windows)]
+                    {
+                        unsafe {
+                            let mut h = windows::Win32::Foundation::HMODULE(std::ptr::null_mut());
+                            let ok = windows::Win32::System::LibraryLoader::GetModuleHandleExW(
+                                windows::Win32::System::LibraryLoader::GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+                                windows::core::PCWSTR(caller as *const u16),
+                                &mut h,
+                            )
+                            .is_ok();
+                            if ok && !h.is_invalid() {
+                                let mut buf = [0u16; 260];
+                                let n = windows::Win32::System::LibraryLoader::GetModuleFileNameW(
+                                    h,
+                                    &mut buf,
+                                );
+                                let name = String::from_utf16_lossy(&buf[..n as usize]);
+                                let short = name
+                                    .rsplit('\\')
+                                    .next()
+                                    .unwrap_or(&name)
+                                    .to_string();
+                                (h.0 as u64, short)
+                            } else {
+                                (0, String::new())
+                            }
+                        }
+                    }
+                    #[cfg(not(windows))]
+                    {
+                        (0u64, String::new())
                     }
                 };
                 if mbase != 0 {
@@ -1008,13 +1149,7 @@ impl<'a> ShapeRun<'a> {
             let evs = worker_hook::drain();
             use std::ffi::CString;
             let name = CString::new("gdi32full.dll").unwrap();
-            let base = unsafe {
-                windows::Win32::System::LibraryLoader::GetModuleHandleA(PCSTR(
-                    name.as_ptr() as *const u8,
-                ))
-                .map(|h| h.0 as u64)
-                .unwrap_or(0)
-            };
+            let base = unsafe { loader::module_handle_a(name.as_bytes_with_nul()) };
             eprintln!("[worker] events={} gdi32full_base={base:#x}", evs.len());
             for (tag, addr) in evs {
                 let t = match tag {
@@ -1150,9 +1285,7 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
     if std::env::var_os("PYUSP_PRELOAD_TS").is_some() {
         let wname: Vec<u16> = "TextShaping.dll\0".encode_utf16().collect();
         unsafe {
-            windows::Win32::System::LibraryLoader::LoadLibraryW(
-                windows::core::PCWSTR(wname.as_ptr()),
-            );
+            let _ = loader::module_handle_wide_forced(&wname);
         }
         // After forcing the engine DLL into memory, hold BEFORE the shape runs
         // so an external tracer (frida) can deterministically attach
@@ -1187,8 +1320,16 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
 
     // Wine-bytes mode: when the loaded module (wineusp) exposes the raw
     // font-bytes provider, register the font and drive shaping with a NULL
-    // hdc — the same path Linux/macOS use (no GDI font/DC needed).
+    // hdc — the same path Linux/macOS use (no GDI font/DC needed). On
+    // non-Windows this is the ONLY path (there is no GDI/AddFontResource).
+    #[cfg(windows)]
     let wine_bytes = opts.wine_bytes && usp.set_font_bytes.is_some();
+    #[cfg(not(windows))]
+    let wine_bytes = if usp.set_font_bytes.is_some() {
+        true
+    } else {
+        return Err("this libwineusp has no usp_set_font_bytes export — rebuild the port with fontbytes".into());
+    };
     let mut fd = if wine_bytes {
         let rc = unsafe { (usp.set_font_bytes.unwrap())(data.as_ptr() as *const c_void, data.len()) };
         if rc != 0 {
@@ -1208,7 +1349,14 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
             family,
         }
     } else {
-        unsafe { make_font_dc(&opts.font, &data) }?
+        #[cfg(windows)]
+        {
+            unsafe { make_font_dc(&opts.font, &data) }?
+        }
+        #[cfg(not(windows))]
+        {
+            unreachable!("non-Windows always uses the wine-bytes path")
+        }
     };
     let mut psc: *mut c_void = ptr::null_mut();
     let mut run = ShapeRun {

@@ -32,7 +32,8 @@ fn main() -> ExitCode {
     }
     // RE helper: --find-sig <hex> prints every RVA where the signature occurs
     // in the loaded module's executable sections (--scan-module <dll>, default
-    // usp10.dll). No shaping.
+    // usp10.dll). No shaping. Windows-only (scans a loaded PE module).
+    #[cfg(windows)]
     if let Some(hex) = arg_val(&args, "--find-sig") {
         let module = arg_val(&args, "--scan-module").or_else(|| arg_val(&args, "--usp10"));
         match pyusp::scan_module_for_sig(module.as_deref(), &hex) {
