@@ -11,7 +11,7 @@ requires-python = ">=3.9"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
-    { name = "Kushim-Jiang" },  # TODO: add your email if you want it public
+    { name = "Kushim-Jiang", email = "kushim_jiang@outlook.com" },
 ]
 keywords = ["uniscribe", "usp10", "opentype", "shaping", "trace", "babelmap"]
 classifiers = [
