@@ -215,7 +215,7 @@ const A_FLOGICAL_ORDER: u16 = 0x4000; // bit 14
 const S_FARABICNUMCTX: u16 = 0x0800; // bit 11
 const S_UBIDILEVEL_MASK: u16 = 0x001F;
 
-const TAG_DFLT: u32 = 0x6466_6C74; // 'dflt' (big-endian chars as u32)
+const TAG_DFLT: u32 = 0x746C_6664; // MS_MAKE_TAG('d','f','l','t') — fourcc LSB-first
 const E_OUTOFMEMORY: i32 = -2147024882; // 0x8007000E
 const E_INVALIDARG: i32 = -2147024809; // 0x80070057
 
@@ -563,32 +563,260 @@ pub struct ShapeOpts {
     pub textshaping: bool,
 }
 
-fn feature_tag(tag: &str) -> u32 {
-    // OT 4CC, big-endian chars as u32 (same convention Uniscribe uses).
-    let mut b = [0u8; 4];
-    for (i, c) in tag.bytes().take(4).enumerate() {
-        b[i] = c;
+/// OpenType 4CC from a feature-tag string.
+///
+/// Follows HarfBuzz's `hb_tag_from_string` ("Valid tags are four characters.
+/// Shorter input strings will be padded with spaces. Longer input strings will
+/// be truncated") for the padding — **spaces (0x20), not NULs** — and requires
+/// printable ASCII. Where HarfBuzz silently *truncates* an over-long tag we
+/// fail instead: a truncated tag selects a different feature, which is exactly
+/// the kind of silent divergence this tracer exists to rule out.
+/// OpenType 4CC from a feature-tag string, in the **Uniscribe `OPENTYPE_TAG`
+/// byte order**.
+///
+/// A tag is exactly four characters, so a shorter one is **right-padded with
+/// spaces (0x20)** — not NULs — and must be printable ASCII. Where HarfBuzz
+/// silently *truncates* an over-long tag we fail instead: a truncated tag
+/// selects a different feature, and that is exactly the kind of silent
+/// divergence this tracer exists to rule out.
+///
+/// Note the byte order: `OPENTYPE_TAG` stores the fourcc **LSB-first**
+/// (`MS_MAKE_TAG` in usp10_internal.h, wine's opentype.c builds the LangSys
+/// tags the same way), i.e. the DWORD's *memory* bytes spell the tag, because
+/// the engine compares those bytes against the font's big-endian fourcc. So
+/// `liga` is 0x6167696C here, not HarfBuzz's `hb_tag_t` 0x6C696761. Using
+/// `from_be_bytes` produced a byte-reversed tag that matched nothing, which
+/// silently dropped every requested feature.
+fn feature_tag(tag: &str) -> Result<u32, String> {
+    let b = tag.as_bytes();
+    if b.is_empty() || b.len() > 4 {
+        return Err(format!(
+            "feature tag {tag:?} must be 1..=4 characters (got {})",
+            b.len()
+        ));
     }
-    u32::from_be_bytes(b)
+    let mut out = [b' '; 4]; // right-padded with spaces, like hb_tag_from_string
+    for (i, &c) in b.iter().enumerate() {
+        if !(0x20..=0x7e).contains(&c) {
+            return Err(format!(
+                "feature tag {tag:?} contains a non-printable-ASCII byte {c:#04x}"
+            ));
+        }
+        out[i] = c;
+    }
+    Ok(u32::from_le_bytes(out))
 }
 
-/// Parse "+liga,-kern,ss01=2" style into feature records.
-fn parse_features(s: &str) -> Vec<(u32, i32)> {
-    let mut out = Vec::new();
-    for part in s.split(',').map(|x| x.trim()).filter(|x| !x.is_empty()) {
-        if let Some(rest) = part.strip_prefix('+') {
-            out.push((feature_tag(rest), 1));
-        } else if let Some(rest) = part.strip_prefix('-') {
-            out.push((feature_tag(rest), 0));
-        } else if let Some((tag, val)) = part.split_once('=') {
-            if let Ok(v) = val.trim().parse::<i32>() {
-                out.push((feature_tag(tag), v));
+/// Parse one feature item: `[+|-] tag [=] value` (a HarfBuzz
+/// `hb_feature_from_string` subset, with the same precedence).
+fn parse_one_feature(part: &str) -> Result<(u32, i32), String> {
+    let mut rest = part;
+
+    // The +/- prefix only supplies the *default* value; an explicit value
+    // parsed below overrides it, because HarfBuzz runs
+    // parse_feature_value_prefix() first and parse_feature_value_postfix()
+    // last. So `+kern=0` means *off* — the old parser short-circuited on the
+    // '+', ignored the `=0` entirely and turned the feature ON instead.
+    let mut value: i32 = 1;
+    if let Some(r) = rest.strip_prefix('+') {
+        rest = r;
+    } else if let Some(r) = rest.strip_prefix('-') {
+        value = 0;
+        rest = r;
+    }
+    rest = rest.trim_start();
+
+    // Tag: either CSS-style quoted, or up to the first whitespace / '=' / '['.
+    let quote = rest.chars().next().filter(|c| *c == '\'' || *c == '"');
+    let (tag, tail) = match quote {
+        Some(q) => {
+            let inner = &rest[1..];
+            let end = inner
+                .find(q)
+                .ok_or_else(|| format!("unterminated quoted tag {rest:?}"))?;
+            (&inner[..end], &inner[end + 1..])
+        }
+        None => {
+            if rest.is_empty() {
+                return Err("missing feature tag".into());
             }
-        } else {
-            out.push((feature_tag(part), 1));
+            let end = rest
+                .find(|c: char| c.is_ascii_whitespace() || c == '=' || c == '[')
+                .unwrap_or(rest.len());
+            (&rest[..end], &rest[end..])
+        }
+    };
+
+    let mut tail = tail.trim_start();
+    if tail.starts_with('[') {
+        return Err(
+            "range syntax `[start:end]` is not supported — features apply to the whole run"
+                .into(),
+        );
+    }
+    if let Some(t) = tail.strip_prefix('=') {
+        tail = t.trim_start();
+        if tail.is_empty() {
+            return Err("`=` without a value".into());
         }
     }
-    out
+    if !tail.is_empty() {
+        value = parse_feature_value(tail.trim())?;
+    }
+    Ok((feature_tag(tag)?, value))
+}
+
+/// Uniscribe `lParameter`: `0` (disabled) / `1` (active, first alternative) /
+/// `N` (alternative index), plus the CSS aliases `off` / `on`.
+fn parse_feature_value(v: &str) -> Result<i32, String> {
+    if v.eq_ignore_ascii_case("off") {
+        return Ok(0);
+    }
+    if v.eq_ignore_ascii_case("on") {
+        return Ok(1);
+    }
+    if v.is_empty() || !v.bytes().all(|b| b.is_ascii_digit()) {
+        return Err(format!(
+            "feature value {v:?} must be a non-negative integer or on/off"
+        ));
+    }
+    v.parse::<i32>()
+        .map_err(|e| format!("feature value {v:?} out of range: {e}"))
+}
+
+/// Parse a HarfBuzz-style feature list into `OPENTYPE_FEATURE_RECORD` pairs.
+///
+/// ```text
+///   feature := [ '+' | '-' ] tag [ '=' ] value
+///   tag     := 1..=4 printable-ASCII chars, optionally quoted ('kern' "kern")
+///   value   := non-negative integer | 'on' | 'off'
+/// ```
+///
+/// with the documented Uniscribe `lParameter` semantics (0 = disabled,
+/// 1 = active / first alternative, >1 = alternative index): `kern`/`+kern`
+/// and `kern=1` → 1, `-kern` and `kern=0` → 0, `aalt=2` → 2.
+///
+/// Every malformed item is an error: silently dropping it (as this used to do
+/// for `ss01=abc`) or truncating its tag changes the shape result with no
+/// diagnostic. Duplicate tags keep the first position but the last value,
+/// because Uniscribe takes one record per feature.
+fn parse_features(s: &str) -> Result<Vec<(u32, i32)>, String> {
+    let mut out: Vec<(u32, i32)> = Vec::new();
+    for part in s.split(',').map(str::trim).filter(|p| !p.is_empty()) {
+        let (tag, value) =
+            parse_one_feature(part).map_err(|e| format!("bad feature {part:?}: {e}"))?;
+        match out.iter_mut().find(|(t, _)| *t == tag) {
+            Some(slot) => slot.1 = value,
+            None => out.push((tag, value)),
+        }
+    }
+    Ok(out)
+}
+
+#[cfg(test)]
+mod feature_tests {
+    use super::*;
+
+    fn t(s: &str) -> u32 {
+        feature_tag(s).unwrap()
+    }
+
+    /// The tag as the engine sees it: bytes in memory, in fourcc order.
+    fn tag_bytes(s: &str) -> [u8; 4] {
+        feature_tag(s).unwrap().to_le_bytes()
+    }
+
+    #[test]
+    fn tag_is_space_padded_fourcc_lsb_first() {
+        // OPENTYPE_TAG (MS_MAKE_TAG) stores the fourcc LSB-first, so the
+        // DWORD's memory bytes spell the tag; the engine compares those.
+        assert_eq!(tag_bytes("liga"), *b"liga");
+        assert_eq!(tag_bytes("kern"), *b"kern");
+        assert_eq!(tag_bytes("aBc"), *b"aBc "); // space-padded, not NUL-padded
+        assert_eq!(tag_bytes("aB"), *b"aB  ");
+        assert_eq!(feature_tag("liga").unwrap(), 0x6167_696C);
+        assert_eq!(TAG_DFLT.to_le_bytes(), *b"dflt");
+    }
+
+    #[test]
+    fn tag_is_not_byte_reversed() {
+        // Regression guard: from_be_bytes made `liga` 0x6C696761, which is
+        // MS_MAKE_TAG('a','g','i','l') — it matched no feature in any font and
+        // silently dropped the whole feature list.
+        assert_ne!(feature_tag("liga").unwrap(), 0x6C69_6761);
+        assert_eq!(feature_tag("liga").unwrap().to_le_bytes(), *b"liga");
+    }
+
+    #[test]
+    fn tag_length_and_charset_are_enforced() {
+        assert!(feature_tag("").is_err());
+        assert!(feature_tag("kernx").is_err()); // no silent truncation
+        assert!(feature_tag("k\u{00e9}rn").is_err());
+        assert!(feature_tag("ke\u{0007}rn").is_err());
+    }
+
+    #[test]
+    fn uniscribe_parameter_values() {
+        assert_eq!(parse_features("kern").unwrap(), vec![(t("kern"), 1)]);
+        assert_eq!(parse_features("+kern").unwrap(), vec![(t("kern"), 1)]);
+        assert_eq!(parse_features("-kern").unwrap(), vec![(t("kern"), 0)]);
+        assert_eq!(parse_features("kern=0").unwrap(), vec![(t("kern"), 0)]);
+        assert_eq!(parse_features("aalt=2").unwrap(), vec![(t("aalt"), 2)]);
+        assert_eq!(parse_features("kern=on").unwrap(), vec![(t("kern"), 1)]);
+        assert_eq!(parse_features("kern=off").unwrap(), vec![(t("kern"), 0)]);
+        assert_eq!(parse_features("kern 0").unwrap(), vec![(t("kern"), 0)]);
+        assert_eq!(parse_features("kern = 0").unwrap(), vec![(t("kern"), 0)]);
+        assert_eq!(parse_features("'kern' 1").unwrap(), vec![(t("kern"), 1)]);
+        assert_eq!(
+            parse_features("\"kern\"=0").unwrap(),
+            vec![(t("kern"), 0)]
+        );
+    }
+
+    #[test]
+    fn explicit_value_overrides_the_prefix_like_harfbuzz() {
+        assert_eq!(parse_features("+kern=0").unwrap(), vec![(t("kern"), 0)]);
+        assert_eq!(parse_features("-kern=1").unwrap(), vec![(t("kern"), 1)]);
+        assert_eq!(parse_features("+ss01=2").unwrap(), vec![(t("ss01"), 2)]);
+    }
+
+    #[test]
+    fn malformed_items_are_errors() {
+        for bad in [
+            "kern=abc",
+            "kern=",
+            "kern=-1",
+            "kern=1.5",
+            "kernx=1",
+            "kern[3:5]",
+            "aalt[3:5]=2",
+            "+",
+            "-",
+            "=0",
+            "kern==",
+            "kern==1",
+        ] {
+            assert!(parse_features(bad).is_err(), "{bad:?} should be rejected");
+        }
+    }
+
+    #[test]
+    fn duplicates_keep_last_value_and_first_position() {
+        assert_eq!(
+            parse_features("kern=0,kern=1").unwrap(),
+            vec![(t("kern"), 1)]
+        );
+        assert_eq!(
+            parse_features("aalt=2,kern=0,aalt=3").unwrap(),
+            vec![(t("aalt"), 3), (t("kern"), 0)]
+        );
+    }
+
+    #[test]
+    fn empty_input_is_no_features() {
+        assert!(parse_features("").unwrap().is_empty());
+        assert!(parse_features("  ,  ,").unwrap().is_empty());
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -961,6 +1189,13 @@ impl<'a> ShapeRun<'a> {
         let mut cglyphs = 0i32;
 
         // feature ranges (single range over the whole run when any feature)
+        //
+        // NOTE: supplying range properties *replaces* the script's default GSUB
+        // feature set for the covered characters, it does not add to it.
+        // Verified against system usp10: `--features liga=1` on Calibri "fi"
+        // yields the fi ligature via the explicit record, while a feature array
+        // whose tags match nothing loses the default liga (296,349 = f,i). So
+        // `--features` means "apply exactly these", not "also apply these".
         let range_chars = [cchars];
         let mut recs: Vec<OPENTYPE_FEATURE_RECORD> = Vec::new();
         let mut range_prop: TEXTRANGE_PROPERTIES = TEXTRANGE_PROPERTIES {
@@ -1371,6 +1606,30 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
 
     let usp = unsafe { Usp10::load(opts.usp10_path.as_deref()) }?;
 
+    // Feature records for the whole call, parsed up front so malformed input
+    // fails before any GDI/shaping work happens.
+    let features = parse_features(&opts.features_arg)?;
+
+    // The Wine-based engine cannot honour feature records at all: its
+    // ScriptShapeOpenType/ScriptPlaceOpenType ports log
+    // FIXME("Ranges not supported yet") and drop rpRangeProperties entirely
+    // (tools/wine_usp/port/src/usp10.c), and the only lParameter consumer there
+    // (shape.c SHAPE_ApplyOpenTypeFeatures) is reached only with the hard-coded
+    // per-script default feature list. Quietly ignoring the caller's features
+    // would make every cross-engine comparison of feature behaviour meaningless
+    // (the same request DID apply them on system usp10), so refuse instead —
+    // the Wine port identifies itself via the usp_set_font_bytes export.
+    if !features.is_empty() && usp.set_font_bytes.is_some() {
+        return Err(format!(
+            "features \"{}\" cannot be applied by the loaded Wine Uniscribe \
+             port: its ScriptShapeOpenType/ScriptPlaceOpenType log \"Ranges not \
+             supported yet\" and drop the OPENTYPE_FEATURE_RECORD array, so the \
+             result would silently ignore them. Use backend='usp10' (system \
+             Uniscribe) or backend='textshaping' for feature selection.",
+            opts.features_arg
+        ));
+    }
+
     // text → utf16
     let text16: Vec<u16> = opts.text.encode_utf16().collect();
     if text16.is_empty() {
@@ -1446,8 +1705,6 @@ pub fn shape_value(opts: ShapeOpts) -> Result<Value, String> {
         native_stages: Vec::new(),
         callee_guard: None,
     };
-
-    let features = parse_features(&opts.features_arg);
 
     let rip_probe = std::env::var_os("PYUSP_RIP_PROBE").is_some();
     let _ripg = if rip_probe {

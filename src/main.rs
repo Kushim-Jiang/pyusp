@@ -2,8 +2,17 @@
 //
 // Usage:
 //   pyusp --font <path> --text <str> [--script <iso>] [--language <bcp47>]
-//         [--direction auto|ltr|rtl] [--features +tag,-tag,tag=N,...]
-//         [--usp10 <path>] [--out <file>]
+//         [--direction auto|ltr|rtl] [--features <list>] [--usp10 <path>]
+//         [--out <file>]
+//
+// --features takes a HarfBuzz-style comma-separated list — "kern", "+kern",
+// "-kern", "kern=0", "kern=on|off", "aalt=2" — mapping onto Uniscribe's
+// OPENTYPE_FEATURE_RECORD lParameter (0 = off, 1 = on/first alternate, >1 =
+// alternate index). An explicit value overrides a +/- prefix ("+kern=0" is
+// off), and malformed items are errors rather than being dropped. Features
+// need a backend that implements feature records (system usp10, or
+// --textshaping); the Wine port logs "Ranges not supported yet" and is
+// refused instead of silently ignoring them.
 
 use std::process::ExitCode;
 
@@ -24,7 +33,13 @@ fn main() -> ExitCode {
             "pyusp — Uniscribe (usp10) OpenType shaping tracer\n\
              usage: pyusp --font <path> --text <str> [--script <iso>]\n\
                     [--language <bcp47>] [--direction auto|ltr|rtl]\n\
-                    [--features +tag,-tag,tag=N,...] [--usp10 <dll>] [--out <file>]\n\
+                    [--features <list>] [--usp10 <dll>] [--out <file>]\n\
+             --features   : HarfBuzz-style list, e.g. kern,+kern,-kern,kern=0,\n\
+                            aalt=2 (explicit =value overrides +/-; errors are\n\
+                            fatal). Needs system usp10 or --textshaping — the\n\
+                            Wine port cannot apply feature records. Note the\n\
+                            list *replaces* the script's default GSUB features\n\
+                            for the run rather than adding to them.\n\
              --wine-bytes : drive wineusp via raw font bytes (NULL hdc),\n\
                              the cross-platform path (no GDI font required)"
         );
