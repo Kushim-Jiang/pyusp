@@ -75,5 +75,9 @@ fn temp_font_path() -> PathBuf {
 #[pymodule]
 fn _pyusp(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(shape_json, m)?)?;
+    // Same as the distribution version (pyproject.toml, Cargo.toml and the
+    // engine crate are kept in lockstep) so a stale wheel in site-packages is
+    // easy to spot: `python -c "import pyusp; print(pyusp.__version__)"`.
+    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     Ok(())
 }

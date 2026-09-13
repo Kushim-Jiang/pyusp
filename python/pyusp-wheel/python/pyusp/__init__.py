@@ -49,6 +49,11 @@ except ImportError as e:  # pragma: no cover - only when the wheel is broken
         "for a different Python/ABI. Reinstall the platform wheel."
     ) from e
 
+# Native engine version (kept in lockstep with pyproject.toml/Cargo.toml).
+# Check it when a fix seems to have no effect — a stale install in
+# site-packages is the usual cause.
+__version__ = _pyusp.__version__
+
 _DLL = Path(__file__).with_name("usp10.dll")
 if os.name == "nt":
     _WINE_NAME = "wineusp.dll"
@@ -136,11 +141,27 @@ def shape_with_uniscribe(
       ``TextShaping.dll`` is outside the validated set),
     * ``backend="usp10"`` → no trace hook; a single whole-run stage.
 
-    ``features`` uses the same ``{tag: bool}`` convention as the HarfBuzz /
-    harfrust engines. Note Uniscribe only recognises legacy OpenType script
-    tags (e.g. ``deva``, not ``dev2``), so modern Indic shaping that depends
-    on newer tags is not available — matching what old Win32 apps that use
-    usp10 actually do.
+    ``features`` uses the same ``{tag: bool|int}`` convention as the HarfBuzz /
+    harfrust engines (``True``/``1`` → ``+tag``, ``False``/``0`` → ``-tag``,
+    any other int → ``tag=N``, i.e. the ``lParameter`` alternate index), or a
+    ready HarfBuzz-style string (``"kern"``, ``"+kern"``, ``"-kern"``,
+    ``"kern=0"``, ``"aalt=2"``). An explicit value overrides a ``+``/``-``
+    prefix exactly like HarfBuzz (``+kern=0`` is *off*), and a malformed item
+    raises instead of being silently dropped.
+
+    **Non-empty ``features`` require ``backend="usp10"`` or
+    ``backend="textshaping"``.** The bundled Wine port does not apply feature
+    records at all — its ``ScriptShapeOpenType``/``ScriptPlaceOpenType`` log
+    ``FIXME("Ranges not supported yet")`` and drop them — so passing features to
+    it raises ``RuntimeError`` rather than returning a shape that ignored them.
+
+    Note also that the list **replaces** the script's default GSUB feature set
+    for the run instead of adding to it (system usp10 semantics for the range
+    properties): ``features={"liga": True}`` applies exactly ``liga``.
+
+    Note Uniscribe only recognises legacy OpenType script tags (e.g. ``deva``,
+    not ``dev2``), so modern Indic shaping that depends on newer tags is not
+    available — matching what old Win32 apps that use usp10 actually do.
     """
     if not isinstance(data, (bytes, bytearray)):
         raise TypeError("data must be font file bytes")

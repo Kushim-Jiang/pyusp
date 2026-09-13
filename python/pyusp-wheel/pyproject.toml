@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "pyusp"
-version = "0.5.0"
+version = "0.6.0"
 description = "Uniscribe (usp10) OpenType shaping tracer (babelsoft /api/opentype/shape compatible). Cross-platform: Windows, Linux, macOS."
 readme = "README.md"
 requires-python = ">=3.9"

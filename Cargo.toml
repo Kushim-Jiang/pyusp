@@ -1,6 +1,6 @@
 [package]
 name = "pyusp"
-version = "0.3.0"
+version = "0.6.0"
 edition = "2021"
 description = "Uniscribe (usp10) step-by-step shaping tracer — babelsoft /api/opentype/shape compatible. Windows-only."
 license = "MIT"
